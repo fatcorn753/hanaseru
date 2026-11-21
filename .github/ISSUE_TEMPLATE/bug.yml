@@ -11,7 +11,7 @@ body:
     id: device
     attributes:
       label: 端末とブラウザ
-      placeholder: 例: iPhone 15 / iOS 19 / Safari(ホーム画面に追加して起動)
+      placeholder: "例: iPhone 15 / iOS 19 / Safari(ホーム画面に追加して起動)"
     validations:
       required: true
   - type: input
