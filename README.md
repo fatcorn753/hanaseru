@@ -1,6 +1,6 @@
 # はなせる
 
-**使ってみる: https://fatcorn753.github.io/hanaseru/**(スマホではホーム画面に追加するとアプリとして使えます)
+**使ってみる: [fatcorn753.github.io/hanaseru](https://fatcorn753.github.io/hanaseru/)**(スマホではホーム画面に追加するとアプリとして使えます)
 
 会話への怖さを、**小さな行動実験**で少しずつほどいていく練習アプリ(PWA)です。
 
