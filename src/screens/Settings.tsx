@@ -46,12 +46,12 @@ export function Settings() {
       <h1>設定</h1>
 
       <h2>きっかけ(もし〜したら)</h2>
-      <label htmlFor="when">もし…</label>
-      <input id="when" type="text" value={when ?? profile.ifThen?.when ?? ""} onChange={(e) => setWhen(e.target.value)} placeholder="例: 休憩時間に入ったら" />
-      <label htmlFor="then">そのとき…</label>
-      <input id="then" type="text" value={then ?? profile.ifThen?.then ?? ""} onChange={(e) => setThen(e.target.value)} placeholder="例: 今日の実験を 1 つ決める" />
-      <button
-        style={{ marginTop: 8 }}
+      <label className="td-label" htmlFor="when">もし…</label>
+      <input className="td-input" id="when" type="text" value={when ?? profile.ifThen?.when ?? ""} onChange={(e) => setWhen(e.target.value)} placeholder="例: 休憩時間に入ったら" />
+      <label className="td-label" htmlFor="then">そのとき…</label>
+      <input className="td-input" id="then" type="text" value={then ?? profile.ifThen?.then ?? ""} onChange={(e) => setThen(e.target.value)} placeholder="例: 今日の実験を 1 つ決める" />
+      <button className="td-btn" type="button"
+        style={{ marginTop: "var(--space-2)" }}
         onClick={async () => {
           const w = (when ?? profile.ifThen?.when ?? "").trim();
           const t = (then ?? profile.ifThen?.then ?? "").trim();
@@ -85,13 +85,13 @@ export function Settings() {
       <h2>データ</h2>
       <p className="small muted">記録はこの端末のブラウザの中だけにあります。ブラウザのデータを消すと記録も消えるので、ときどき書き出しておくと安心です。</p>
       <div className="row">
-        <button onClick={download}>書き出す</button>
-        <button onClick={() => file.current?.click()}>読み込む</button>
+        <button className="td-btn" type="button" onClick={download}>書き出す</button>
+        <button className="td-btn" type="button" onClick={() => file.current?.click()}>読み込む</button>
         <input ref={file} type="file" accept="application/json,.json" hidden onChange={(e) => e.target.files?.[0] && restore(e.target.files[0])} />
       </div>
       <button
-        className="ghost"
-        style={{ color: "var(--bad)", marginTop: 8 }}
+        className="td-btn" data-variant="ghost" type="button"
+        style={{ color: "var(--error-text)", marginTop: "var(--space-2)" }}
         onClick={async () => {
           if (!confirm("すべての記録と設定を削除します。元に戻せません。よろしいですか？")) return;
           await wipeAll();
@@ -107,15 +107,15 @@ export function Settings() {
         続けにくかった点や、わかりにくかった言葉を教えてもらえると、改善に一番役立ちます。送り先は GitHub で、内容は公開されます(GitHub のアカウントが必要です)。記録の中身や、個人がわかることは書かないでください。
       </p>
       <div className="row">
-        <a className="btn" href={LINKS.feedback} target="_blank" rel="noreferrer">感想を送る</a>
-        <a className="btn" href={LINKS.bug} target="_blank" rel="noreferrer">不具合を報告する</a>
+        <a className="td-btn" href={LINKS.feedback} target="_blank" rel="noreferrer">感想を送る</a>
+        <a className="td-btn" href={LINKS.bug} target="_blank" rel="noreferrer">不具合を報告する</a>
       </div>
 
       <h2>このアプリについて</h2>
       <p className="small">
         はなせるは、社交不安への認知行動療法で効果が確かめられている考え方(行動実験・安全行動を外す・外に注意を向ける・会話後の反すうを止める)と、会話の実証研究をもとにした練習アプリです。診断や治療をするものではありません。
       </p>
-      <div className="card warm small">
+      <div className="td-card small" data-tone="warm">
         <p>つらさが強いとき、生活に支障が出ているときは、専門家に相談してください。</p>
         {HELP_LINKS.map((l) => (
           <p key={l.url}>

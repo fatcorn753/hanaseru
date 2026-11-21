@@ -49,11 +49,11 @@ export function Onboarding({ profile }: { profile: Profile }) {
         <section>
           <h1>はなせる</h1>
           <p>会話への怖さを、<strong>小さな実験</strong>で少しずつほどいていくアプリです。</p>
-          <div className="card">
+          <div className="td-card">
             <h3>このアプリがめざすこと</h3>
             <p>緊張をゼロにすることではありません。緊張していても会話を避けずに済み、終わったあと引きずらない状態をめざします。</p>
           </div>
-          <div className="card warm">
+          <div className="td-card" data-tone="warm">
             <h3>大切なお知らせ</h3>
             <p className="small">
               このアプリは練習用の道具で、病気の診断や治療をするものではありません。毎日の生活が送れないほどつらいとき、気分の落ち込みが続くときは、医療機関や相談窓口を頼ってください。
@@ -65,13 +65,13 @@ export function Onboarding({ profile }: { profile: Profile }) {
             ))}
             <p className="small">記録はすべてこの端末の中だけに保存され、外部へ送信されません。</p>
           </div>
-          <button className="primary block" onClick={() => setStep(1)}>はじめる</button>
+          <button className="td-btn block" data-variant="primary" type="button" onClick={() => setStep(1)}>はじめる</button>
         </section>
       )}
       {step === 1 && (
         <section>
           <h1>しくみ</h1>
-          <div className="card accent stack">
+          <div className="td-card stack" data-tone="accent">
             <p><strong>1. 予想する</strong> — 「話しかけたら変な顔をされる(確信度 80%)」</p>
             <p><strong>2. 現実で試す</strong> — 小さな課題を、安全行動を一つやめて</p>
             <p><strong>3. 結果と比べる</strong> — 「実際は普通に返事をされた」</p>
@@ -92,9 +92,9 @@ export function Onboarding({ profile }: { profile: Profile }) {
             }}
           />
           <div className="row">
-            <button onClick={() => setStep(0)}>もどる</button>
+            <button className="td-btn" type="button" onClick={() => setStep(0)}>もどる</button>
             <span className="spacer" />
-            <button className="primary" onClick={() => setStep(2)}>つぎへ</button>
+            <button className="td-btn" data-variant="primary" type="button" onClick={() => setStep(2)}>つぎへ</button>
           </div>
         </section>
       )}
@@ -105,10 +105,10 @@ export function Onboarding({ profile }: { profile: Profile }) {
           {BASELINE_ITEMS.map((k) => (
             <Scale key={k} label={k} value={baseline[k]} onChange={(v) => setBaseline({ ...baseline, [k]: v })} low="平気" high="とても怖い" />
           ))}
-          <div className="row" style={{ marginTop: 16 }}>
-            <button onClick={() => setStep(1)}>もどる</button>
+          <div className="row" style={{ marginTop: "var(--space-4)" }}>
+            <button className="td-btn" type="button" onClick={() => setStep(1)}>もどる</button>
             <span className="spacer" />
-            <button className="primary" onClick={() => setStep(3)}>つぎへ</button>
+            <button className="td-btn" data-variant="primary" type="button" onClick={() => setStep(3)}>つぎへ</button>
           </div>
         </section>
       )}
@@ -120,10 +120,10 @@ export function Onboarding({ profile }: { profile: Profile }) {
             こうした行動は「安全行動」と呼ばれます。その場は楽になりますが、「大丈夫だったのはお守りのおかげ」と感じさせ、怖さを長引かせます。実験で一つずつ外していきます。
           </p>
           <Chips options={SAFETY_BEHAVIORS} value={safety} onChange={setSafety} />
-          <div className="row" style={{ marginTop: 16 }}>
-            <button onClick={() => setStep(2)}>もどる</button>
+          <div className="row" style={{ marginTop: "var(--space-4)" }}>
+            <button className="td-btn" type="button" onClick={() => setStep(2)}>もどる</button>
             <span className="spacer" />
-            <button className="primary" onClick={() => setStep(4)}>つぎへ</button>
+            <button className="td-btn" data-variant="primary" type="button" onClick={() => setStep(4)}>つぎへ</button>
           </div>
         </section>
       )}
@@ -131,15 +131,15 @@ export function Onboarding({ profile }: { profile: Profile }) {
         <section>
           <h1>きっかけを一つ決める</h1>
           <p>「もし〜したら、〜する」と決めておくと、実行率が上がります。あとで変えられます。</p>
-          <label>もし…</label>
+          <label className="td-label">もし…</label>
           <Chips single options={WHEN_OPTIONS} value={when} onChange={setWhen} />
-          <label>そのとき…</label>
+          <label className="td-label">そのとき…</label>
           <Chips single options={THEN_OPTIONS} value={then} onChange={setThen} />
           <p className="refs">根拠: Gollwitzer & Sheeran (2006)</p>
-          <div className="row" style={{ marginTop: 16 }}>
-            <button onClick={() => setStep(3)}>もどる</button>
+          <div className="row" style={{ marginTop: "var(--space-4)" }}>
+            <button className="td-btn" type="button" onClick={() => setStep(3)}>もどる</button>
             <span className="spacer" />
-            <button className="primary" onClick={finish}>{when[0] && then[0] ? "はじめる" : "あとで決める"}</button>
+            <button className="td-btn" data-variant="primary" type="button" onClick={finish}>{when[0] && then[0] ? "はじめる" : "あとで決める"}</button>
           </div>
         </section>
       )}

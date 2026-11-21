@@ -49,12 +49,12 @@ export function WeeklyReview({ weekStart: ws }: { weekStart?: number }) {
       </p>
 
       {s.count === 0 ? (
-        <div className="card">
+        <div className="td-card">
           <p>この週は実験がありませんでした。休む週があっても大丈夫です。積み重ねは消えません。</p>
         </div>
       ) : (
         <>
-          <div className="card accent">
+          <div className="td-card" data-tone="accent">
             <p>
               実験 <strong>{s.count}</strong> 回のうち、最悪の予想が外れたのは <strong>{s.disconfirmed}</strong> 回。
             </p>
@@ -68,7 +68,7 @@ export function WeeklyReview({ weekStart: ws }: { weekStart?: number }) {
           {s.learned.length > 0 && (
             <>
               <h2>わかったこと</h2>
-              <div className="card">
+              <div className="td-card">
                 {s.learned.map((l, i) => (
                   <div key={i} className="list-item">「{l}」</div>
                 ))}
@@ -85,7 +85,7 @@ export function WeeklyReview({ weekStart: ws }: { weekStart?: number }) {
       {profile.weeklyFocus && <p className="small muted">いまの目標: {profile.weeklyFocus}</p>}
       <Chips single options={options} value={focus} onChange={setFocus} />
       <Refs refs={["Harkin et al. (2016) Psychological Bulletin", "Gollwitzer & Sheeran (2006)"]} />
-      <button className="primary block" style={{ marginTop: 12 }} onClick={save}>
+      <button className="td-btn block" data-variant="primary" type="button" style={{ marginTop: "var(--space-3)" }} onClick={save}>
         {focus[0] ? "これにする" : "そのまま閉じる"}
       </button>
     </div>

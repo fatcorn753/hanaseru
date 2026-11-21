@@ -8,6 +8,7 @@ import { db, getProfile } from "../lib/db";
 import { useNav } from "../lib/nav";
 import { gap, recommendLevel } from "../lib/stats";
 import type { Experiment, Level, Track } from "../lib/types";
+import { IconStar } from "../components/icons";
 
 type Phase = "choose" | "predict" | "ready" | "result" | "gap";
 const PHASES: Phase[] = ["choose", "predict", "ready", "result", "gap"];
@@ -120,7 +121,13 @@ export function ExperimentFlow({ resumeId, missionId }: { resumeId?: number; mis
           <div className="row" role="tablist" aria-label="段階">
             {([1, 2, 3, 4, 5, 6] as Level[]).map((l) => (
               <button key={l} className="chip" aria-pressed={l === level} onClick={() => setViewLevel(l)}>
-                {l}{l === rec.level ? "★" : ""}
+                {l}
+                {l === rec.level && (
+                  <>
+                    <IconStar />
+                    <span className="visually-hidden">(おすすめ)</span>
+                  </>
+                )}
               </button>
             ))}
           </div>
@@ -129,7 +136,7 @@ export function ExperimentFlow({ resumeId, missionId }: { resumeId?: number; mis
             <button
               key={x.id}
               className="option"
-              style={{ margin: "6px 0" }}
+              style={{ margin: "var(--space-2) 0" }}
               onClick={() => {
                 setMission({ id: x.id, title: x.title, level: x.level, track });
                 setPhase("predict");
@@ -140,11 +147,11 @@ export function ExperimentFlow({ resumeId, missionId }: { resumeId?: number; mis
               <span className="small muted">{x.detail}</span>
             </button>
           ))}
-          <div className="card">
-            <label htmlFor="custom">自分で課題を作る(段階 {level})</label>
-            <input id="custom" type="text" value={custom} onChange={(e) => setCustom(e.target.value)} placeholder="例: 隣の席の人に授業のことを聞く" />
-            <button
-              style={{ marginTop: 8 }}
+          <div className="td-card">
+            <label className="td-label" htmlFor="custom">自分で課題を作る(段階 {level})</label>
+            <input className="td-input" id="custom" type="text" value={custom} onChange={(e) => setCustom(e.target.value)} placeholder="例: 隣の席の人に授業のことを聞く" />
+            <button className="td-btn" type="button"
+              style={{ marginTop: "var(--space-2)" }}
               disabled={!custom.trim()}
               onClick={() => {
                 setMission({ title: custom.trim(), level, track });
@@ -162,12 +169,12 @@ export function ExperimentFlow({ resumeId, missionId }: { resumeId?: number; mis
         <section>
           <Back onClick={() => setPhase("choose")} />
           <h1>予想する</h1>
-          <div className="card accent">
+          <div className="td-card" data-tone="accent">
             <strong>{mission.title}</strong>
             {m && <p className="small">{m.detail}</p>}
           </div>
-          <label htmlFor="pred">起きそうな最悪のこと</label>
-          <textarea id="pred" value={prediction} onChange={(e) => setPrediction(e.target.value)} placeholder="具体的に。例: 話しかけたら迷惑そうな顔をされる" />
+          <label className="td-label" htmlFor="pred">起きそうな最悪のこと</label>
+          <textarea className="td-input" id="pred" value={prediction} onChange={(e) => setPrediction(e.target.value)} placeholder="具体的に。例: 話しかけたら迷惑そうな顔をされる" />
           <div className="row" style={{ marginTop: 6 }}>
             {PREDICTION_EXAMPLES.map((p) => (
               <button key={p} className="chip" onClick={() => setPrediction(p)}>{p}</button>
@@ -175,12 +182,12 @@ export function ExperimentFlow({ resumeId, missionId }: { resumeId?: number; mis
           </div>
           <Scale label="それが起きる確信度" value={confidence} onChange={setConfidence} max={100} unit="%" low="起きない" high="必ず起きる" />
           <Scale label="予想する緊張" value={expectedAnxiety} onChange={setExpectedAnxiety} low="0 平気" high="10 最大" />
-          <label>今回やめる「お守り行動」(1 つ)</label>
+          <label className="td-label">今回やめる「お守り行動」(1 つ)</label>
           <Chips single options={safetyOptions} value={dropped} onChange={setDropped} />
-          <label>相手に向ける注意のお題(1 つ)</label>
+          <label className="td-label">相手に向ける注意のお題(1 つ)</label>
           <Chips single options={FOCUS_TASKS} value={focus} onChange={setFocus} />
           <p className="small muted">お題は気をそらすためではなく、相手のことを知るためのものです。</p>
-          <button className="primary block" style={{ marginTop: 16 }} disabled={!prediction.trim()} onClick={savePlan}>
+          <button className="td-btn block" data-variant="primary" type="button" style={{ marginTop: "var(--space-4)" }} disabled={!prediction.trim()} onClick={savePlan}>
             予想を保存する
           </button>
         </section>
@@ -189,7 +196,7 @@ export function ExperimentFlow({ resumeId, missionId }: { resumeId?: number; mis
       {phase === "ready" && exp && (
         <section>
           <h1>いってらっしゃい</h1>
-          <div className="card accent stack">
+          <div className="td-card stack" data-tone="accent">
             <p><strong>{exp.title}</strong></p>
             <p className="small">予想: {exp.prediction}(確信度 {exp.confidence}%)</p>
             {exp.safetyBehaviorDropped && <p className="small">やめる: {exp.safetyBehaviorDropped}</p>}
@@ -202,15 +209,15 @@ export function ExperimentFlow({ resumeId, missionId }: { resumeId?: number; mis
           <p className="muted small">うまく話せるかではなく、予想が当たるかを確かめる実験です。失敗しても、それもデータになります。</p>
           <h3>直前に使う(任意)</h3>
           <div className="row">
-            <button onClick={() => go({ name: "foundation", tool: "breath" })}>ため息呼吸</button>
-            <button onClick={() => go({ name: "foundation", tool: "reappraisal" })}>読み替え</button>
-            <button onClick={() => go({ name: "foundation", tool: "worry" })}>心配の書き出し</button>
+            <button className="td-btn" type="button" onClick={() => go({ name: "foundation", tool: "breath" })}>ため息呼吸</button>
+            <button className="td-btn" type="button" onClick={() => go({ name: "foundation", tool: "reappraisal" })}>読み替え</button>
+            <button className="td-btn" type="button" onClick={() => go({ name: "foundation", tool: "worry" })}>心配の書き出し</button>
           </div>
-          <button className="primary block" style={{ marginTop: 20 }} onClick={() => setPhase("result")}>やってきた → 結果を書く</button>
-          <div className="row" style={{ marginTop: 8 }}>
-            <button className="ghost" onClick={() => go({ name: "home" })}>あとで書く</button>
+          <button className="td-btn block" data-variant="primary" type="button" style={{ marginTop: "var(--space-5)" }} onClick={() => setPhase("result")}>やってきた → 結果を書く</button>
+          <div className="row" style={{ marginTop: "var(--space-2)" }}>
+            <button className="td-btn" data-variant="ghost" type="button" onClick={() => go({ name: "home" })}>あとで書く</button>
             <span className="spacer" />
-            <button className="ghost" onClick={abandon}>今回は見送る</button>
+            <button className="td-btn" data-variant="ghost" type="button" onClick={abandon}>今回は見送る</button>
           </div>
         </section>
       )}
@@ -220,14 +227,14 @@ export function ExperimentFlow({ resumeId, missionId }: { resumeId?: number; mis
           <Back onClick={() => setPhase("ready")} />
           <h1>結果</h1>
           <p className="small muted">予想: {exp.prediction}</p>
-          <label htmlFor="hap">実際に起きたこと(事実だけ)</label>
-          <textarea id="hap" value={happened} onChange={(e) => setHappened(e.target.value)} placeholder="例: 相手は「そうなんですよ」と笑って、30 秒ほど話した" />
+          <label className="td-label" htmlFor="hap">実際に起きたこと(事実だけ)</label>
+          <textarea className="td-input" id="hap" value={happened} onChange={(e) => setHappened(e.target.value)} placeholder="例: 相手は「そうなんですよ」と笑って、30 秒ほど話した" />
           <p className="small muted">「たぶん変に思われた」のような推測ではなく、相手の言葉や表情など、見聞きしたことを書きます。</p>
           <Scale label="最悪の予想はどのくらい当たった？" value={cameTrue} onChange={setCameTrue} max={100} unit="%" low="全く" high="その通り" />
           <Scale label="実際の緊張の最高値" value={peak} onChange={setPeak} low="0 平気" high="10 最大" />
-          <label htmlFor="learn">わかったこと(1 文)</label>
-          <input id="learn" type="text" value={learned} onChange={(e) => setLearned(e.target.value)} placeholder="例: 少し詰まっても、相手は待ってくれる" />
-          <button className="primary block" style={{ marginTop: 16 }} disabled={!happened.trim()} onClick={saveResult}>
+          <label className="td-label" htmlFor="learn">わかったこと(1 文)</label>
+          <input className="td-input" id="learn" type="text" value={learned} onChange={(e) => setLearned(e.target.value)} placeholder="例: 少し詰まっても、相手は待ってくれる" />
+          <button className="td-btn block" data-variant="primary" type="button" style={{ marginTop: "var(--space-4)" }} disabled={!happened.trim()} onClick={saveResult}>
             記録する
           </button>
         </section>
@@ -245,17 +252,17 @@ function GapView({ exp }: { exp: Experiment }) {
   return (
     <section>
       <h1>予想と結果</h1>
-      <div className="card">
+      <div className="td-card">
         <CompareBar label="最悪の予想" before={exp.confidence} after={exp.cameTrue!} max={100} unit="%" beforeLabel="予想した確信度" afterLabel="実際に当たった度合い" />
         <CompareBar label="緊張" before={exp.expectedAnxiety} after={exp.peakAnxiety!} max={10} beforeLabel="予想" afterLabel="実際" />
       </div>
       {better ? (
-        <div className="card accent">
+        <div className="td-card" data-tone="accent">
           <p><strong>予想より現実のほうがやさしかったようです。</strong></p>
           <p className="small">このずれを積み重ねることが、怖さを減らす一番の材料になります。</p>
         </div>
       ) : (
-        <div className="card warm">
+        <div className="td-card" data-tone="warm">
           <p><strong>予想に近い結果でした。それでも、やってみたこと自体が前進です。</strong></p>
           <p className="small">相手の反応には相手の事情もあります。同じ段で相手や場所を変えて、もう一度試してみましょう。</p>
         </div>
@@ -263,8 +270,8 @@ function GapView({ exp }: { exp: Experiment }) {
       {exp.learned && <p>わかったこと: 「{exp.learned}」</p>}
       <p className="small muted">このあと頭の中で反省会が始まったら、ホームから 2 分で整えられます。</p>
       <div className="row">
-        <button className="primary" onClick={() => go({ name: "home" })}>ホームへ</button>
-        <button onClick={() => go({ name: "records" })}>記録を見る</button>
+        <button className="td-btn" data-variant="primary" type="button" onClick={() => go({ name: "home" })}>ホームへ</button>
+        <button className="td-btn" type="button" onClick={() => go({ name: "records" })}>記録を見る</button>
       </div>
     </section>
   );
@@ -276,12 +283,12 @@ export function CompareBar(props: { label: string; before: number; after: number
     <div style={{ margin: "8px 0 14px" }}>
       <strong>{props.label}</strong>
       <div className="small muted">{props.beforeLabel} {props.before}{props.unit ?? ""}</div>
-      <div style={{ height: 12, borderRadius: 6, background: "var(--line)" }}>
-        <div style={{ width: w(props.before), height: "100%", borderRadius: 6, background: "var(--warm)" }} />
+      <div style={{ height: 12, borderRadius: 6, background: "var(--border-subtle)" }}>
+        <div style={{ width: w(props.before), height: "100%", borderRadius: 6, background: "var(--warning-text)" }} />
       </div>
       <div className="small muted" style={{ marginTop: 4 }}>{props.afterLabel} {props.after}{props.unit ?? ""}</div>
-      <div style={{ height: 12, borderRadius: 6, background: "var(--line)" }}>
-        <div style={{ width: w(props.after), height: "100%", borderRadius: 6, background: "var(--accent)" }} />
+      <div style={{ height: 12, borderRadius: 6, background: "var(--border-subtle)" }}>
+        <div style={{ width: w(props.after), height: "100%", borderRadius: 6, background: "var(--accent-solid)" }} />
       </div>
     </div>
   );

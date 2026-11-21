@@ -27,13 +27,13 @@ export function Foundation({ tool }: { tool?: Tool }) {
       <h1>整える</h1>
       <p className="muted">会話そのものではなく、会話を支える体と心の土台です。単体で続けるより、実験の前後に使うと効果的です。</p>
       {TOOLS.map((t) => (
-        <button key={t.id} className="option" style={{ margin: "6px 0" }} onClick={() => go({ name: "foundation", tool: t.id })}>
+        <button key={t.id} className="option" style={{ margin: "var(--space-2) 0" }} onClick={() => go({ name: "foundation", tool: t.id })}>
           <strong>{t.title}</strong>
           <br />
           <span className="small muted">{t.desc}</span>
         </button>
       ))}
-      <div className="card">
+      <div className="td-card">
         <h3>睡眠と運動</h3>
         <p className="small">
           睡眠が足りないと、人との距離をとりたくなり、不安も強まりやすくなります。ホームで睡眠を記録すると、その日の課題が軽めになります。会う前の 5〜10 分の散歩も、緊張をやわらげる助けになります。
@@ -103,9 +103,9 @@ function Breath({ onBack }: { onBack: () => void }) {
       <p style={{ textAlign: "center" }} className="big-number">{fmtTime(left)}</p>
       <div className="row" style={{ justifyContent: "center" }}>
         {left === 0 ? (
-          <button className="primary" onClick={onBack}>もどる</button>
+          <button className="td-btn" data-variant="primary" type="button" onClick={onBack}>もどる</button>
         ) : (
-          <button className="primary" onClick={() => setRunning(!running)}>{running ? "一時停止" : elapsed ? "再開" : "はじめる"}</button>
+          <button className="td-btn" data-variant="primary" type="button" onClick={() => setRunning(!running)}>{running ? "一時停止" : elapsed ? "再開" : "はじめる"}</button>
         )}
       </div>
       <p className="small muted">息苦しくなったら、普通の呼吸に戻してかまいません。息を止める練習はしません。</p>
@@ -120,11 +120,11 @@ function Reappraisal({ onBack }: { onBack: () => void }) {
     <div>
       <Back onClick={onBack} />
       <h1>{REAPPRAISAL.title}</h1>
-      <div className="card accent stack">
+      <div className="td-card stack" data-tone="accent">
         {REAPPRAISAL.body.map((b) => <p key={b}>{b}</p>)}
       </div>
       {REAPPRAISAL.choices.map((c) => (
-        <button key={c} className="option" style={{ margin: "6px 0" }} aria-pressed={chosen === c} onClick={() => setChosen(c)}>
+        <button key={c} className="option" style={{ margin: "var(--space-2) 0" }} aria-pressed={chosen === c} onClick={() => setChosen(c)}>
           「{c}」
         </button>
       ))}
@@ -155,7 +155,7 @@ function WorryDump({ onBack }: { onBack: () => void }) {
       {!done ? (
         <>
           <p className="big-number">{fmtTime(left)}</p>
-          <textarea
+          <textarea className="td-input"
             aria-label="心配ごと"
             value={text}
             onChange={(e) => {
@@ -165,14 +165,14 @@ function WorryDump({ onBack }: { onBack: () => void }) {
             placeholder="書き始めるとタイマーが動きます"
             style={{ minHeight: 200 }}
           />
-          <button style={{ marginTop: 8 }} onClick={() => { setRunning(false); setDone(true); }}>書き終えた</button>
+          <button className="td-btn" type="button" style={{ marginTop: "var(--space-2)" }} onClick={() => { setRunning(false); setDone(true); }}>書き終えた</button>
         </>
       ) : (
-        <div className="card accent">
+        <div className="td-card" data-tone="accent">
           <p>書き出せました。この文章は保存しません。</p>
           <p className="small">ここからは、相手のことに注意を向けましょう。</p>
           <button
-            className="primary"
+            className="td-btn" data-variant="primary" type="button"
             onClick={() => {
               setText("");
               onBack();
@@ -181,7 +181,7 @@ function WorryDump({ onBack }: { onBack: () => void }) {
             閉じる
           </button>
           <button
-            className="ghost"
+            className="td-btn" data-variant="ghost" type="button"
             onClick={async () => {
               await db.reflections.add({ createdAt: Date.now(), kind: "worry-dump", text });
               setText("");
@@ -221,11 +221,11 @@ function Pmr({ onBack }: { onBack: () => void }) {
         <>
           <p>体の 4 か所に、{PMR.tenseSec} 秒力を入れて、{PMR.releaseSec} 秒ゆるめます。座ったままでも、人前でも目立たずにできます。</p>
           <p className="small muted">{PMR.caution}</p>
-          <button className="primary" onClick={() => { setNow(Date.now()); setStartedAt(Date.now()); }}>はじめる</button>
+          <button className="td-btn" data-variant="primary" type="button" onClick={() => { setNow(Date.now()); setStartedAt(Date.now()); }}>はじめる</button>
         </>
       )}
       {step && (
-        <div className="card accent" aria-live="polite">
+        <div className="td-card" data-tone="accent" aria-live="polite">
           <p className="muted small">{i + 1} / {PMR_STEPS.length}</p>
           <h2>{step.part}</h2>
           <p className="big-number">{tense ? step.tense : "ふっとゆるめる"}</p>
@@ -233,9 +233,9 @@ function Pmr({ onBack }: { onBack: () => void }) {
         </div>
       )}
       {i >= PMR_STEPS.length && (
-        <div className="card accent">
+        <div className="td-card" data-tone="accent">
           <p>おわりです。ゆるんだ感じを少し味わってから戻りましょう。</p>
-          <button className="primary" onClick={onBack}>もどる</button>
+          <button className="td-btn" data-variant="primary" type="button" onClick={onBack}>もどる</button>
         </div>
       )}
       <Refs refs={[PMR.ref]} />
@@ -253,14 +253,14 @@ export function Compassion({ onBack, experimentId, onDone }: { onBack: () => voi
       <p className="small muted">{SELF_COMPASSION.note}</p>
       {SELF_COMPASSION.steps.map((s, k) => (
         <div key={k}>
-          <label htmlFor={`sc${k}`}>{k + 1}. {s.label}</label>
-          <textarea id={`sc${k}`} value={texts[k]} placeholder={s.hint} onChange={(e) => setTexts(texts.map((t, j) => (j === k ? e.target.value : t)))} />
+          <label className="td-label" htmlFor={`sc${k}`}>{k + 1}. {s.label}</label>
+          <textarea className="td-input" id={`sc${k}`} value={texts[k]} placeholder={s.hint} onChange={(e) => setTexts(texts.map((t, j) => (j === k ? e.target.value : t)))} />
         </div>
       ))}
       {!saved ? (
         <button
-          className="primary block"
-          style={{ marginTop: 12 }}
+          className="td-btn block" data-variant="primary" type="button"
+          style={{ marginTop: "var(--space-3)" }}
           disabled={!texts[2].trim()}
           onClick={async () => {
             await db.reflections.add({ createdAt: Date.now(), kind: "compassion", experimentId, text: texts.join("\n") });
@@ -271,9 +271,9 @@ export function Compassion({ onBack, experimentId, onDone }: { onBack: () => voi
           書けた
         </button>
       ) : (
-        <div className="card accent">
+        <div className="td-card" data-tone="accent">
           <p>自分にかけた言葉: 「{texts[2]}」</p>
-          <button className="primary" onClick={onBack}>もどる</button>
+          <button className="td-btn" data-variant="primary" type="button" onClick={onBack}>もどる</button>
         </div>
       )}
       <Refs refs={[SELF_COMPASSION.ref]} />
