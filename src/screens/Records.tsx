@@ -1,9 +1,13 @@
 import { useLiveQuery } from "dexie-react-hooks";
+import { useState } from "react";
+import { RehearsalTrend, TalkTrend, TrackTable } from "../components/Trends";
+import { TRACK_INFO, trackOf } from "../content/missions";
 import { db } from "../lib/db";
 import { LINKS } from "../lib/links";
 import { useNav } from "../lib/nav";
 import { done, heatmap, summarize } from "../lib/stats";
-import type { Experiment } from "../lib/types";
+import { rehearsalTrend, talkTrend, trackStats } from "../lib/trends";
+import type { Experiment, Track } from "../lib/types";
 
 const fmt = (t: number) => new Date(t).toLocaleDateString("ja-JP", { month: "numeric", day: "numeric" });
 
@@ -11,13 +15,21 @@ export function Records() {
   const go = useNav();
   const exps = useLiveQuery(() => db.experiments.toArray(), []);
   const videos = useLiveQuery(() => db.videos.orderBy("createdAt").reverse().toArray(), []);
-  if (!exps || !videos) return null;
-  const s = summarize(exps);
-  const d = done(exps).sort((a, b) => (b.doneAt ?? 0) - (a.doneAt ?? 0));
+  const talks = useLiveQuery(() => db.talks.toArray(), []);
+  const rehearsals = useLiveQuery(() => db.rehearsals.toArray(), []);
+  // 場面の絞り込み。null はすべて
+  const [track, setTrack] = useState<Track | null>(null);
+  if (!exps || !videos || !talks || !rehearsals) return null;
+  const tstats = trackStats(exps);
+  const shown = track ? exps.filter((x) => trackOf(x) === track) : exps;
+  const s = summarize(shown);
+  const d = done(shown).sort((a, b) => (b.doneAt ?? 0) - (a.doneAt ?? 0));
   const heat = heatmap(exps, 30);
   const learned = d.filter((x) => x.learned);
+  const talkPoints = talkTrend(talks);
+  const rs = rehearsalTrend(rehearsals);
 
-  if (!d.length && !videos.length)
+  if (!done(exps).length && !videos.length && !talkPoints.length && !rs.length)
     return (
       <div>
         <h1>記録</h1>
@@ -29,6 +41,16 @@ export function Records() {
   return (
     <div>
       <h1>記録</h1>
+      {tstats.length >= 2 && (
+        <div className="row" role="group" aria-label="場面で絞り込む">
+          <button className="chip" aria-pressed={track === null} onClick={() => setTrack(null)}>すべて</button>
+          {tstats.map((t) => (
+            <button key={t.track} className="chip" aria-pressed={track === t.track} onClick={() => setTrack(t.track)}>
+              {TRACK_INFO[t.track].name}
+            </button>
+          ))}
+        </div>
+      )}
       {s.count > 0 && (
         <div className="card">
           <div className="row" style={{ gap: 24 }}>
@@ -52,6 +74,13 @@ export function Records() {
         <>
           <h2>予想と結果(最近 12 回)</h2>
           <GapChart xs={d.slice(0, 12).reverse()} />
+        </>
+      )}
+
+      {tstats.length > 0 && (
+        <>
+          <h2>場面ごとの変化</h2>
+          <TrackTable stats={track ? tstats.filter((t) => t.track === track) : tstats} />
         </>
       )}
 
@@ -109,6 +138,20 @@ export function Records() {
           <p>3 回以上実験しましたね。続けやすさや、わかりにくかったところを教えてもらえませんか？</p>
           <a href={LINKS.feedback} target="_blank" rel="noreferrer">感想を送る(GitHub・内容は公開されます)</a>
         </div>
+      )}
+
+      {talkPoints.length > 0 && (
+        <>
+          <h2>台本会話</h2>
+          <TalkTrend points={talkPoints} />
+        </>
+      )}
+
+      {rs.length > 0 && (
+        <>
+          <h2>人前で話すリハーサル</h2>
+          <RehearsalTrend rs={rs} />
+        </>
       )}
 
       {videos.length > 0 && (
