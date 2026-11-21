@@ -9,7 +9,8 @@ export type Route =
   | { name: "records" }
   | { name: "settings" }
   | { name: "pep"; experimentId: number }
-  | { name: "review"; weekStart?: number };
+  | { name: "review"; weekStart?: number }
+  | { name: "talk"; scriptId?: string };
 
 export const NavContext = createContext<(r: Route) => void>(() => {});
 export const useNav = () => useContext(NavContext);

@@ -1,5 +1,5 @@
 import Dexie, { type Table } from "dexie";
-import type { DrillAttempt, Experiment, Profile, Reflection, SleepLog, VideoReview } from "./types";
+import type { DrillAttempt, Experiment, Profile, Reflection, SleepLog, TalkLog, VideoReview } from "./types";
 
 export class HanaseruDB extends Dexie {
   experiments!: Table<Experiment, number>;
@@ -7,6 +7,7 @@ export class HanaseruDB extends Dexie {
   videos!: Table<VideoReview, number>;
   reflections!: Table<Reflection, number>;
   drills!: Table<DrillAttempt, number>;
+  talks!: Table<TalkLog, number>;
   kv!: Table<{ key: string; value: unknown }, string>;
 
   constructor(name = "hanaseru") {
@@ -19,6 +20,7 @@ export class HanaseruDB extends Dexie {
       drills: "++id, createdAt, drillId",
       kv: "key",
     });
+    this.version(2).stores({ talks: "++id, createdAt, scriptId" });
   }
 }
 
@@ -38,7 +40,7 @@ export async function saveProfile(p: Profile, d: HanaseruDB = db) {
 export const BACKUP_FORMAT = "hanaseru-backup";
 export const BACKUP_VERSION = 1;
 
-const TABLES = ["experiments", "sleep", "videos", "reflections", "drills", "kv"] as const;
+const TABLES = ["experiments", "sleep", "videos", "reflections", "drills", "talks", "kv"] as const;
 
 /** 端末内の全データを JSON にする。録画そのものは保存していないので含まれない */
 export async function exportAll(d: HanaseruDB = db) {

@@ -154,3 +154,12 @@ video { width: 100%; border-radius: var(--radius); background: #000; }
   .pacer { transition: none !important; }
 }
 a.btn { display: inline-flex; align-items: center; text-decoration: none; color: var(--accent); }
+
+/* 台本会話 */
+.talk-log { margin: 8px 0 12px; }
+.bubble { max-width: 85%; padding: 10px 14px; border-radius: 16px; margin: 6px 0; line-height: 1.6; }
+.bubble.them { background: var(--surface); border: 1px solid var(--line); border-top-left-radius: 4px; }
+.bubble.me { background: var(--accent-soft); margin-left: auto; border-top-right-radius: 4px; }
+.ctx { color: var(--muted); font-size: 0.88rem; margin: 10px 0 4px; }
+.meter { height: 8px; border-radius: 8px; background: var(--line); overflow: hidden; margin: 8px 0; }
+.meter span { display: block; height: 100%; background: var(--accent); transition: width 80ms linear; }

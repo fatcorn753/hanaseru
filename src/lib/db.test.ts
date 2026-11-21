@@ -6,11 +6,13 @@ describe("バックアップ", () => {
     const d = new HanaseruDB("t1");
     await d.experiments.add({ createdAt: 1, status: "done", title: "a", level: 1, prediction: "p", confidence: 50, expectedAnxiety: 5 });
     await saveProfile({ safetyBehaviors: ["目をそらす"] }, d);
+    await d.talks.add({ createdAt: 2, scriptId: "class-before", turns: [{ nodeId: "n1", choice: 0, tone: "good" }], finished: true });
     const b = JSON.parse(JSON.stringify(await exportAll(d)));
     await wipeAll(d);
     expect(await d.experiments.count()).toBe(0);
     await importAll(b, d);
     expect(await d.experiments.count()).toBe(1);
+    expect(await d.talks.count()).toBe(1);
     expect((await getProfile(d)).safetyBehaviors).toEqual(["目をそらす"]);
   });
 

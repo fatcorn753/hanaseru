@@ -16,6 +16,12 @@ export function Dojo({ drillId }: { drillId?: string }) {
     <div>
       <h1>スキル道場</h1>
       <p className="muted">現実の会話で使う「型」を、ひとりで確かめる場所です。知るだけでは身につきにくいので、終わったら現実で 1 回試しましょう。</p>
+      <div className="card accent">
+        <h3>台本会話</h3>
+        <p className="small">授業前・バイトの休憩・サークル・美容院の会話を、声に出して練習します。分かれ道つきで、どの返しでも会話は続きます。</p>
+        <button className="primary" onClick={() => go({ name: "talk" })}>はじめる</button>
+      </div>
+      <h2>型を確かめる</h2>
       {DRILLS.map((x) => {
         const n = attempts?.filter((a) => a.drillId === x.id).length ?? 0;
         return (

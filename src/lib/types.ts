@@ -1,3 +1,4 @@
+import type { TalkTurn } from "./talk";
 import type { Weekday } from "./ics";
 
 /** 課題のはしごの段階。1 が最も易しい */
@@ -82,6 +83,26 @@ export interface DrillAttempt {
   correct: boolean;
 }
 
+export interface TalkLog {
+  id?: number;
+  createdAt: number;
+  scriptId: string;
+  /** 選んだ返しと、声に出したときの数値。文字起こしの中身は保存しない */
+  turns: TalkTurn[];
+  finished: boolean;
+}
+
+export interface TalkSettings {
+  /** 声に出してから選ぶ(false なら選ぶだけ) */
+  voice: boolean;
+  /** 相手のセリフを読み上げる */
+  tts: boolean;
+  /** 話した言葉を文字起こしする(既定はオフ。端末の外に音声が送られることがある) */
+  recognition: boolean;
+}
+
+export const DEFAULT_TALK: TalkSettings = { voice: true, tts: true, recognition: false };
+
 export interface Profile {
   onboardedAt?: number;
   /** 自分の安全行動(チェックリストから選択) */
@@ -98,4 +119,6 @@ export interface Profile {
   lastReviewedWeek?: string;
   /** 今週意識すること(振り返りで選ぶ) */
   weeklyFocus?: string;
+  /** 台本会話の設定 */
+  talk?: TalkSettings;
 }
