@@ -1,5 +1,6 @@
 import { addDays, localDate } from "./date";
-import type { Experiment, Level, SleepQuality } from "./types";
+import { trackOf } from "../content/missions";
+import type { Experiment, Level, SleepQuality, Track } from "./types";
 
 export const done = (xs: Experiment[]) =>
   xs.filter((x) => x.status === "done" && x.cameTrue !== undefined && x.peakAnxiety !== undefined);
@@ -48,8 +49,8 @@ const clampLevel = (n: number): Level => Math.min(6, Math.max(1, Math.round(n)))
  * 不安が下がることではなく「予想が外れた体験」が続いたら上げる(制止学習の考え方)。
  * 睡眠不足の日は対人不安が上がりやすいので 1 段下げる。
  */
-export function recommendLevel(xs: Experiment[], sleep?: SleepQuality): Recommendation {
-  const d = done(xs).sort((a, b) => (a.doneAt ?? 0) - (b.doneAt ?? 0));
+export function recommendLevel(xs: Experiment[], sleep?: SleepQuality, track: Track = "chat"): Recommendation {
+  const d = done(xs).filter((x) => trackOf(x) === track).sort((a, b) => (a.doneAt ?? 0) - (b.doneAt ?? 0));
   let level: Level = 1;
   let reason = "まずは一番やさしい段から始めましょう。";
   if (d.length) {

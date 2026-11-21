@@ -84,6 +84,8 @@ export class SpeechDetector {
   private lastVoice: number | null = null;
   private segStart: number | null = null;
   private total = 0;
+  /** 話していた区間 [始まり, 終わり] */
+  private segs: [number, number][] = [];
   private t0: number | null = null;
   onsetAt: number | null = null;
 
@@ -114,6 +116,7 @@ export class SpeechDetector {
       this.aboveSince = null;
       if (this.segStart !== null && this.lastVoice !== null && t - this.lastVoice > this.opts.hangoverMs) {
         this.total += this.lastVoice - this.segStart;
+        this.segs.push([this.segStart, this.lastVoice]);
         this.segStart = null;
       }
     }
@@ -128,6 +131,19 @@ export class SpeechDetector {
   speakingMs() {
     const cur = this.segStart !== null && this.lastVoice !== null ? this.lastVoice - this.segStart : 0;
     return this.total + cur;
+  }
+
+  /** 話し始めてから、minMs 以上の間をとった回数と、一番長い間(ms) */
+  pauses(minMs: number) {
+    const segs = this.segStart !== null && this.lastVoice !== null ? [...this.segs, [this.segStart, this.lastVoice] as [number, number]] : this.segs;
+    let count = 0;
+    let longest = 0;
+    for (let i = 1; i < segs.length; i++) {
+      const g = segs[i][0] - segs[i - 1][1];
+      if (g >= minMs) count++;
+      longest = Math.max(longest, g);
+    }
+    return { count, longest };
   }
 
   /** 話していて、いまは silenceMs 以上黙っているか */

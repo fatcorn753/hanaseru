@@ -1,4 +1,4 @@
-import type { Level, Mission } from "../lib/types";
+import type { Experiment, Level, Mission, Track } from "../lib/types";
 
 export const LEVEL_NAMES: Record<Level, string> = {
   1: "一言を添える",
@@ -59,9 +59,76 @@ export const MISSIONS: Mission[] = [
   { id: "l6-ask-advice", level: 6, title: "相談する", detail: "小さな悩みを一つ相談する。人は頼られると好意を持ちやすい。" },
   { id: "l6-long-talk", level: 6, title: "20 分以上の 1 対 1", detail: "知り合いと 20 分以上話す。途中の沈黙も記録する。" },
   { id: "l6-blush-ok", level: 6, title: "緊張していると言う", detail: "「ちょっと緊張してて」と口にしてみる。相手の反応を観察する。" },
+  // ---- 発表・人前で話す ----
+  { id: "sp1-rehearse", track: "speech", level: 1, title: "1 分、声に出してリハーサル", detail: "道場の「人前で話すリハーサル」で、テーマを決めて 1 分話す。原稿は読まない。", skillIds: ["speech"] },
+  { id: "sp1-record", track: "speech", level: 1, title: "自分の話す声を録音して聞く", detail: "スマホの録音で 1 分話し、他人の声のつもりで聞く。思っていたより落ち着いて聞こえるか確かめる。" },
+  { id: "sp2-answer", track: "speech", level: 2, title: "当てられたら一言+理由で答える", detail: "授業や会議で聞かれたら「〇〇だと思います。△△だからです」と答える。" },
+  { id: "sp2-agree", track: "speech", level: 2, title: "少人数で「賛成です」と言う", detail: "ゼミやグループで、賛成の一言を理由つきで言う。" },
+  { id: "sp3-question", track: "speech", level: 3, title: "授業や説明会で質問を 1 つする", detail: "手を挙げて質問する。質問は短く、1 つだけ。", skillIds: ["speech"] },
+  { id: "sp3-early", track: "speech", level: 3, title: "最初の 10 分で発言する", detail: "話し合いの始めのうちに一度話す。遅くなるほど言いにくくなる。" },
+  { id: "sp4-intro-front", track: "speech", level: 4, title: "前に出て 30 秒の自己紹介", detail: "名前と、最近はまっていることを一つ。聞いている誰か一人に向けて話す。", skillIds: ["speech"] },
+  { id: "sp4-pause", track: "speech", level: 4, title: "文の終わりで 1 拍置く", detail: "安全行動「早口で終わらせる」をやめる実験。間が聞き手にどう受け取られたか観察する。", skillIds: ["speech"] },
+  { id: "sp5-present", track: "speech", level: 5, title: "原稿を読まずに 3 分発表する", detail: "要点だけのメモで話す。言いよどんでもそのまま続ける。", skillIds: ["speech"] },
+  { id: "sp5-faces", track: "speech", level: 5, title: "発表中に聞き手 3 人の顔を見る", detail: "自分の様子ではなく、聞き手の反応に注意を向ける。うなずいた人を覚えておく。", skillIds: ["speech"] },
+  { id: "sp6-stop", track: "speech", level: 6, title: "発表中にわざと 3 秒止まる", detail: "「えーと、少し待ってください」と言って 3 秒止まる。聞き手がどう反応したか記録する。", skillIds: ["speech"] },
+  { id: "sp6-dont-know", track: "speech", level: 6, title: "「いま答えられません」と言う", detail: "質疑で「いま答えられないので、調べてお伝えします」と言ってみる。" },
+  { id: "sp6-feedback", track: "speech", level: 6, title: "発表後に感想を聞く", detail: "聞き手に「わかりにくい所ありましたか？」と聞く。" },
+  // ---- 職場・バイトのやりとり ----
+  { id: "wk1-greet", track: "work", level: 1, title: "相手に届く声であいさつ", detail: "出勤・退勤のときに、相手の顔を見て「おつかれさまです」。" },
+  { id: "wk1-thanks", track: "work", level: 1, title: "具体的にお礼を言う", detail: "「さっき〇〇を代わってくれて、助かりました」と、何に感謝したかを添える。" },
+  { id: "wk2-confirm", track: "work", level: 2, title: "指示を復唱して確かめる", detail: "「〇〇を△時までに、で合っていますか？」と確認する。", skillIds: ["askhelp"] },
+  { id: "wk2-where", track: "work", level: 2, title: "物の場所ややり方を 1 つ聞く", detail: "知っていそうな人に短く聞いて、お礼を言う。", skillIds: ["askhelp"] },
+  { id: "wk3-stuck", track: "work", level: 3, title: "15 分詰まったら質問する", detail: "「〇〇まではできたのですが、△△がわからなくて」と、どこまでできたかを添えて聞く。", skillIds: ["askhelp"] },
+  { id: "wk3-advice", track: "work", level: 3, title: "先輩にコツを聞く", detail: "「〇〇のコツってありますか？」と助言を求める。難しいことについて助言を求めると、むしろ有能に見られやすいという研究がある。", skillIds: ["askhelp"] },
+  { id: "wk4-done", track: "work", level: 4, title: "終わったら結論から報告する", detail: "「〇〇終わりました。△△だけ気になった点があります」と、結論を先に言う。", skillIds: ["askhelp"] },
+  { id: "wk4-progress", track: "work", level: 4, title: "途中経過を自分から伝える", detail: "聞かれる前に「いま半分くらいです。〇時には終わりそうです」と伝える。" },
+  { id: "wk5-mistake", track: "work", level: 5, title: "小さなミスをすぐ伝える", detail: "気づいたら早めに「〇〇を間違えました。△△で直そうと思います」と、事実と対応案を伝える。早く共有するほど直しやすく、チームも同じミスを防げる。", skillIds: ["askhelp"] },
+  { id: "wk5-late", track: "work", level: 5, title: "間に合わなさそうなら早めに相談", detail: "締め切りの前に「このままだと〇日になりそうです。どうしましょう」と相談する。", skillIds: ["askhelp"] },
+  { id: "wk6-suggest", track: "work", level: 6, title: "一つ提案する", detail: "「〇〇してみるのはどうでしょう」と、小さな改善を一つ言う。" },
+  { id: "wk6-concern", track: "work", level: 6, title: "懸念を一点だけ伝える", detail: "話し合いで「一点だけ気になっているのが」と、やわらかく伝える。" },
+  // ---- 頼む・断る ----
+  { id: "as1-order", track: "assert", level: 1, title: "店で小さな希望を言う", detail: "「氷少なめで」「袋はいりません」など、自分の希望を一つ言う。" },
+  { id: "as1-seat", track: "assert", level: 1, title: "「この席いいですか？」と聞く", detail: "空いている席に座る前に一言聞く。" },
+  { id: "as2-favor", track: "assert", level: 2, title: "ちょっとしたことを頼む", detail: "「それ取ってもらえますか？」など、すぐ済むことを頼む。", skillIds: ["request"] },
+  { id: "as2-repeat", track: "assert", level: 2, title: "「もう一度お願いします」と言う", detail: "聞き取れなかったら、聞こえたふりをせずに聞き返す。", skillIds: ["request"] },
+  { id: "as3-sales", track: "assert", level: 3, title: "勧誘や試食を断る", detail: "「今日は大丈夫です、ありがとうございます」と短く断る。理由は言わなくてよい。", skillIds: ["decline"] },
+  { id: "as3-wrong", track: "assert", level: 3, title: "注文の間違いを伝える", detail: "「すみません、頼んだのは〇〇なんです」と伝える。" },
+  { id: "as4-help", track: "assert", level: 4, title: "手間のかかることを頼む", detail: "友人や同僚に、理由と期限を添えて頼む。頼まれた側は、頼む側が思うより引き受けてくれやすい。", skillIds: ["request"] },
+  { id: "as4-notes", track: "assert", level: 4, title: "休んだ授業のノートを見せてもらう", detail: "「〇日のノート、見せてもらえませんか？」と頼む。", skillIds: ["request"] },
+  { id: "as5-invite", track: "assert", level: 5, title: "気が進まない誘いを断る", detail: "「誘ってくれてありがとう。今回はやめておくね」と、感謝と結論を先に言う。", skillIds: ["decline"] },
+  { id: "as5-task", track: "assert", level: 5, title: "引き受けられない頼みを断る", detail: "「今週は〇〇があって難しいです。来週なら手伝えます」と、代案を添えて断る。", skillIds: ["decline"] },
+  { id: "as6-prefer", track: "assert", level: 6, title: "決めごとで希望を先に言う", detail: "「私は〇〇がいいです」と、ほかの人より先に言う。", skillIds: ["request"] },
+  { id: "as6-boundary", track: "assert", level: 6, title: "嫌なことをやめてもらう", detail: "「〇〇はやめてもらえると助かります」と、落ち着いて一度伝える。", skillIds: ["request"] },
 ];
 
 export const missionById = (id?: string) => MISSIONS.find((m) => m.id === id);
+
+export const TRACKS: Track[] = ["chat", "speech", "work", "assert"];
+
+export const TRACK_INFO: Record<Track, { name: string; levels: Record<Level, string> }> = {
+  chat: { name: "雑談・初対面", levels: LEVEL_NAMES },
+  speech: {
+    name: "発表・人前で話す",
+    levels: { 1: "ひとりで声に出す", 2: "少人数の前で一言", 3: "自分から発言する", 4: "前に出て短く話す", 5: "発表する", 6: "わざと小さく失敗する" },
+  },
+  work: {
+    name: "職場・バイトのやりとり",
+    levels: { 1: "あいさつとお礼", 2: "短く確認する", 3: "質問・相談する", 4: "自分から報告する", 5: "ミスや遅れを伝える", 6: "意見・提案をする" },
+  },
+  assert: {
+    name: "頼む・断る",
+    levels: { 1: "小さな希望を言う", 2: "小さく頼む", 3: "小さく断る", 4: "手間のかかることを頼む", 5: "誘いや頼まれごとを断る", 6: "自分の考えを通す" },
+  },
+};
+
+export const trackOfMission = (m: Mission): Track => m.track ?? "chat";
+
+/** 記録の場面。古い記録には track がないので、課題から引き、なければ雑談とみなす */
+export function trackOf(x: Pick<Experiment, "track" | "missionId">): Track {
+  if (x.track) return x.track;
+  const m = missionById(x.missionId);
+  return m ? trackOfMission(m) : "chat";
+}
 
 /** 安全行動のチェックリスト(Clark & Wells モデル)。やめる実験の候補になる */
 export const SAFETY_BEHAVIORS = [

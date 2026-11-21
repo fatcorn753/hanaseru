@@ -83,6 +83,17 @@ describe("話し始めの検出", () => {
     const end = feed(d, Array(40).fill(0.003));
     expect(d.finishedSpeaking(end, 800)).toBe(false);
   });
+  it("話の途中の間を数える", () => {
+    const d = new SpeechDetector();
+    const q = (n: number) => Array(n).fill(0.003);
+    const v = (n: number) => Array(n).fill(0.1);
+    // 話す 1 秒 → 間 2.5 秒 → 話す 1 秒 → 間 0.6 秒 → 話す 1 秒
+    feed(d, [...q(4), ...v(20), ...q(50), ...v(20), ...q(12), ...v(20)]);
+    const p = d.pauses(2000);
+    expect(p.count).toBe(1);
+    expect(p.longest).toBeGreaterThanOrEqual(2500);
+    expect(p.longest).toBeLessThan(2700);
+  });
   it("rms", () => {
     expect(rms(new Float32Array([0.5, -0.5, 0.5, -0.5]))).toBeCloseTo(0.5);
   });

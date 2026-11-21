@@ -59,6 +59,12 @@ describe("recommendLevel", () => {
     expect(recommendLevel([x({ level: 3 }), x({ level: 3 })], "poor").level).toBe(3);
     expect(recommendLevel([], "poor").level).toBe(1);
   });
+  it("場面ごとに別々に数える", () => {
+    const xs = [x({ level: 4 }), x({ level: 4 }), x({ level: 2, track: "work" }), x({ level: 2, missionId: "wk2-where" })];
+    expect(recommendLevel(xs).level).toBe(5);
+    expect(recommendLevel(xs, undefined, "work").level).toBe(3);
+    expect(recommendLevel(xs, undefined, "speech").level).toBe(1);
+  });
   it("6 を超えない", () => {
     const six = [x({ level: 6 as Level }), x({ level: 6 as Level })];
     expect(recommendLevel(six).level).toBe(6);

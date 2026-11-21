@@ -4,8 +4,13 @@ import type { Weekday } from "./ics";
 /** 課題のはしごの段階。1 が最も易しい */
 export type Level = 1 | 2 | 3 | 4 | 5 | 6;
 
+/** 課題のはしごの種類(場面)。chat は最初からある雑談・初対面 */
+export type Track = "chat" | "speech" | "work" | "assert";
+
 export interface Mission {
   id: string;
+  /** 省略時は chat */
+  track?: Track;
   level: Level;
   title: string;
   detail: string;
@@ -21,6 +26,8 @@ export interface Experiment {
   createdAt: number;
   status: ExperimentStatus;
   missionId?: string;
+  /** 省略時は課題から、なければ chat とみなす(古い記録との互換) */
+  track?: Track;
   title: string;
   level: Level;
   /** 最悪の予想 */
@@ -92,6 +99,23 @@ export interface TalkLog {
   finished: boolean;
 }
 
+/** 人前で話すリハーサル 1 回分。音声そのものは保存しない */
+export interface Rehearsal {
+  id?: number;
+  createdAt: number;
+  seconds: number;
+  topic?: string;
+  focus?: string;
+  /** 話す前の予想: 緊張は外からどのくらいわかるか 0–10 */
+  predictedVisible: number;
+  /** 話したあとの見積もり 0–10 */
+  afterVisible?: number;
+  speakMs?: number;
+  /** 2 秒以上の間の回数 */
+  pauses?: number;
+  longestPauseMs?: number;
+}
+
 export interface TalkSettings {
   /** 声に出してから選ぶ(false なら選ぶだけ) */
   voice: boolean;
@@ -119,6 +143,8 @@ export interface Profile {
   lastReviewedWeek?: string;
   /** 今週意識すること(振り返りで選ぶ) */
   weeklyFocus?: string;
+  /** いま取り組んでいる場面 */
+  track?: Track;
   /** 台本会話の設定 */
   talk?: TalkSettings;
 }

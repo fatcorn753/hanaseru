@@ -1,7 +1,7 @@
 import { useLiveQuery } from "dexie-react-hooks";
-import { LEVEL_NAMES } from "../content/missions";
+import { TRACKS, TRACK_INFO } from "../content/missions";
 import { localDate } from "../lib/date";
-import { db, getProfile } from "../lib/db";
+import { db, getProfile, saveProfile } from "../lib/db";
 import { useNav } from "../lib/nav";
 import { DEFAULT_WEEKLY_GOAL, goalProgress, pendingPep, pendingReview, recommendLevel, summarize, weekStart, weekSummary } from "../lib/stats";
 import type { SleepQuality } from "../lib/types";
@@ -20,7 +20,8 @@ export function Home() {
   const profile = useLiveQuery(() => getProfile(), []);
   if (!exps || !profile) return null;
 
-  const rec = recommendLevel(exps, sleep?.quality);
+  const track = profile.track ?? "chat";
+  const rec = recommendLevel(exps, sleep?.quality, track);
   const pep = pendingPep(exps);
   const planned = exps.filter((x) => x.status === "planned").sort((a, b) => b.createdAt - a.createdAt);
   const s = summarize(exps);
@@ -84,7 +85,14 @@ export function Home() {
 
       <div className="card">
         <p className="muted small">今日のおすすめ</p>
-        <h2 style={{ marginTop: 0 }}>段階 {rec.level}: {LEVEL_NAMES[rec.level]}</h2>
+        <div className="row" aria-label="場面">
+          {TRACKS.map((t) => (
+            <button key={t} className="chip" aria-pressed={t === track} onClick={() => saveProfile({ ...profile, track: t })}>
+              {TRACK_INFO[t].name}
+            </button>
+          ))}
+        </div>
+        <h2>段階 {rec.level}: {TRACK_INFO[track].levels[rec.level]}</h2>
         <p className="small">{rec.reason}</p>
         <button className="primary block" onClick={() => go({ name: "experiment" })}>実験を始める</button>
       </div>

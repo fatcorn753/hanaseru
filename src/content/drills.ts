@@ -243,6 +243,143 @@ export const DRILLS: Drill[] = [
       },
     ],
   },
+  {
+    id: "askhelp",
+    title: "質問・報告の仕方",
+    why: "職場で質問や報告をためらうのは、無能に見られるのが怖いから。けれど、難しいことについて助言を求める人はむしろ有能に見られやすく、ミスを早く共有するチームほど学習が進む。",
+    refs: ["Brooks, Gino & Schweitzer (2015) Management Science", "Edmondson (1999) Administrative Science Quarterly", "Lee (1997) OBHDP"],
+    rule: "結論から。どこまでできたか + 何を聞きたいか",
+    items: [
+      {
+        id: "a1",
+        prompt: "任された作業のやり方がわからず、15 分止まっている。",
+        options: [
+          { text: "〇〇まではできたんですが、△△の手順がわからなくて。教えてもらえますか？", good: true, feedback: "どこまでできたかを添えると、相手は短く答えられる。" },
+          { text: "(もう少し自分で調べてみる)", good: false, feedback: "調べるのは大切だが、決めた時間を過ぎたら聞くほうが早い。抱え込むほど言い出しにくくなる。" },
+          { text: "すみません、全然わからないんですけど…", good: false, feedback: "どこがわからないかが伝わらないと、相手も答えにくい。" },
+        ],
+      },
+      {
+        id: "a2",
+        prompt: "頼まれた資料をまとめ終わった。上司に伝える。",
+        options: [
+          { text: "資料まとめ終わりました。一点だけ、△△の数字が古いかもしれません", good: true, feedback: "結論が先、気になる点が後。相手が一言で判断できる。" },
+          { text: "えっと、資料のほうなんですけど、最初に〇〇を見て、それから…", good: false, feedback: "経緯から話すと、相手は「で、終わったの？」を待つことになる。" },
+        ],
+      },
+      {
+        id: "a3",
+        prompt: "発注の数を一桁まちがえたことに、さっき気づいた。",
+        options: [
+          { text: "〇〇の発注数を間違えました。いま業者に連絡して直そうと思います", good: true, feedback: "事実と対応案をすぐ伝える。早いほど直せることが多く、チームも同じミスを防げる。" },
+          { text: "(こっそり直せないか試してから考える)", good: false, feedback: "隠すと、気づかれたときの影響が大きくなりやすい。" },
+          { text: "本当にすみません、私いつもこうで…", good: false, feedback: "謝ることは大切だが、自分を責める言葉より、次にどうするかが相手の知りたいこと。" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "request",
+    title: "頼み方",
+    why: "頼む側は「断られるだろう」と考えがちだが、実際には頼まれた人は予想よりずっと引き受けてくれやすく、助けたあとの気分もよいことが多い。",
+    refs: ["Flynn & Lake (2008) J. Personality and Social Psychology", "Zhao & Epley (2022) Psychological Science"],
+    rule: "何を・いつまでに・なぜ、を一文で。断る余地も残す",
+    items: [
+      {
+        id: "r1",
+        prompt: "グループ課題で、スライドを 1 枚担当してほしい。",
+        options: [
+          { text: "〇〇さん、スライドの 3 枚目を木曜までにお願いできますか？ 調べてくれた内容なので", good: true, feedback: "何を・いつまでに・なぜ、が入っている。相手は判断しやすい。" },
+          { text: "もしよかったらでいいんですけど、手が空いてたら何か…", good: false, feedback: "遠慮しすぎて、何を頼まれたのか相手にわからない。" },
+          { text: "スライドやっといて", good: false, feedback: "範囲も期限もなく、相手の負担が読めない。" },
+        ],
+      },
+      {
+        id: "r2",
+        prompt: "休んだ授業のノートを見せてほしい。",
+        options: [
+          { text: "先週休んじゃって。もしよければ、〇日のノートを見せてもらえませんか？", good: true, feedback: "理由を添え、相手が断れる言い方になっている。" },
+          { text: "(誰にも頼まず、自力でなんとかする)", good: false, feedback: "頼まれた側は、頼む側が思うより引き受けてくれやすい。" },
+        ],
+      },
+      {
+        id: "r3",
+        prompt: "店員さんの説明が早くて聞き取れなかった。",
+        options: [
+          { text: "すみません、もう一度お願いできますか？", good: true, feedback: "聞き返すのは普通のこと。相手もそのほうが助かる。" },
+          { text: "(わかったふりをしてうなずく)", good: false, feedback: "あとで困るのは自分。聞き返しを避けるのは安全行動の一つ。" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "decline",
+    title: "断り方",
+    why: "誘いを断ると関係が悪くなると思いがちだが、断られた側の受けとめは、断る側が想像するよりずっと軽い。感謝と結論を先に言えば、理由は短くてよい。",
+    refs: ["Givi & Kirk (2024) J. Personality and Social Psychology", "Speed, Goldstein & Goldfried (2018) Clinical Psychology: Science and Practice"],
+    rule: "感謝 → 結論 → (短い理由) → (代案)",
+    items: [
+      {
+        id: "d1",
+        prompt: "気が進まない飲み会に誘われた。",
+        options: [
+          { text: "誘ってくれてありがとう。今回はやめておくね", good: true, feedback: "感謝と結論だけで十分。理由を作り込まなくてよい。" },
+          { text: "あー、その日はたぶん…いや、どうだろう…", good: false, feedback: "あいまいにすると、相手は返事を待ち続けることになる。" },
+          { text: "本当にごめん、実は親戚が来てて、それで…", good: false, feedback: "言いわけを重ねるほど、話が長くなって断りにくくなる。" },
+        ],
+      },
+      {
+        id: "d2",
+        prompt: "今週は手いっぱいなのに、作業を手伝ってほしいと頼まれた。",
+        options: [
+          { text: "今週は〇〇があって難しいです。来週なら手伝えます", good: true, feedback: "断る理由と代案。関係を保ったまま断れる。" },
+          { text: "わかりました…(無理して引き受ける)", good: false, feedback: "引き受けて間に合わないほうが、相手にとっても困る。" },
+        ],
+      },
+      {
+        id: "d3",
+        prompt: "店で、いらない会員登録をすすめられた。",
+        options: [
+          { text: "今日は大丈夫です、ありがとうございます", good: true, feedback: "短く、はっきり。理由は言わなくてよい。" },
+          { text: "えっと、考えておきます…", good: false, feedback: "あいまいだと、もう一度すすめられやすい。" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "speech",
+    title: "人前で話すときの注意の向け先",
+    why: "話し手は自分の緊張が聞き手に伝わっていると思いがちだが、実際にはあまり見えていない。自分の様子を見張ったり、早口・原稿の読み上げで乗り切ったりすると、かえって緊張して見えやすい。",
+    refs: ["Savitsky & Gilovich (2003) J. Experimental Social Psychology", "Ebrahimi et al. (2019) Frontiers in Psychology", "McManus, Sacadura & Clark (2008) J. Behav. Ther. Exp. Psychiatry"],
+    rule: "自分ではなく、聞き手の一人に向けて話す",
+    items: [
+      {
+        id: "p1",
+        prompt: "発表の途中で、声が震えている気がする。",
+        options: [
+          { text: "(そのまま、前の席の人に向けて話し続ける)", good: true, feedback: "震えは自分が思うほど聞き手には伝わっていない。注意を聞き手に戻すと落ち着きやすい。" },
+          { text: "(早く終わらせようと早口になる)", good: false, feedback: "早口は安全行動。聞き取りにくくなり、かえって緊張が目立つ。" },
+          { text: "すみません、緊張してて…と何度も謝る", good: false, feedback: "一度言うのは悪くないが、繰り返すと聞き手の注意が緊張に向く。" },
+        ],
+      },
+      {
+        id: "p2",
+        prompt: "発表の準備をしている。",
+        options: [
+          { text: "要点だけをメモにして、声に出して 2 回練習する", good: true, feedback: "要点で話すほうが、聞き手を見る余裕ができる。" },
+          { text: "原稿を一字一句覚える", good: false, feedback: "丸暗記は、一語飛ぶと止まりやすい。安全行動の一つ。" },
+        ],
+      },
+      {
+        id: "p3",
+        prompt: "話す内容が一瞬、頭から飛んだ。",
+        options: [
+          { text: "少々お待ちください(メモを見て、2–3 秒置いて再開)", good: true, feedback: "止まってメモを確かめるのは普通のこと。慌ててつなぐより伝わる。" },
+          { text: "(思いついたことを慌ててつなぐ)", good: false, feedback: "話が散らかりやすい。止まって確かめるほうが伝わる。" },
+        ],
+      },
+    ],
+  },
 ];
 
 export const drillById = (id: string) => DRILLS.find((d) => d.id === id);

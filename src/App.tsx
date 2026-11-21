@@ -9,6 +9,7 @@ import { Home } from "./screens/Home";
 import { Onboarding } from "./screens/Onboarding";
 import { Pep } from "./screens/Pep";
 import { Records } from "./screens/Records";
+import { Rehearsal } from "./screens/Rehearsal";
 import { Settings } from "./screens/Settings";
 import { Talk } from "./screens/Talk";
 import { VideoReviewScreen } from "./screens/VideoReview";
@@ -55,6 +56,7 @@ export function App() {
     case "pep": screen = <Pep experimentId={route.experimentId} />; break;
     case "review": screen = <WeeklyReview weekStart={route.weekStart} />; break;
     case "talk": screen = <Talk scriptId={route.scriptId} />; break;
+    case "rehearsal": screen = <Rehearsal />; break;
   }
 
   return (
@@ -63,7 +65,7 @@ export function App() {
       <nav className="tabs" aria-label="メイン">
         <div className="inner">
           {TABS.map((t) => (
-            <button key={t.name} aria-current={route.name === t.name || (route.name === "talk" && t.name === "dojo") ? "page" : undefined} onClick={() => go({ name: t.name } as Route)}>
+            <button key={t.name} aria-current={route.name === t.name || ((route.name === "talk" || route.name === "rehearsal") && t.name === "dojo") ? "page" : undefined} onClick={() => go({ name: t.name } as Route)}>
               <span className="ico" aria-hidden>{t.ico}</span>
               {t.label}
             </button>

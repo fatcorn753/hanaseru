@@ -23,7 +23,7 @@ export function WeeklyReview({ weekStart: ws }: { weekStart?: number }) {
   const start = ws ?? weekStart();
   const s = weekSummary(exps, start);
   const isCurrent = start === weekStart();
-  const rec = recommendLevel(exps);
+  const rec = recommendLevel(exps, undefined, profile.track);
   const options = [
     ...(profile.safetyBehaviors.length ? profile.safetyBehaviors : SAFETY_BEHAVIORS).map((b) => `「${b}」をやめてみる`),
     `段階 ${rec.level} の課題を、場所や相手を変えて試す`,

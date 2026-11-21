@@ -4,7 +4,9 @@
  */
 
 export type Tone = "good" | "ok" | "closed";
-export type SkillId = "followup" | "reflect" | "ending" | "topic" | "disclosure" | "aizuchi" | "silence";
+export type SkillId =
+  | "followup" | "reflect" | "ending" | "topic" | "disclosure" | "aizuchi" | "silence"
+  | "askhelp" | "request" | "decline" | "speech";
 
 export interface ScriptChoice {
   text: string;
@@ -26,7 +28,7 @@ export interface ScriptNode {
   end?: boolean;
 }
 
-export type Scene = "class" | "work" | "circle" | "shop";
+export type Scene = "class" | "work" | "circle" | "shop" | "office" | "assert";
 
 export interface Script {
   id: string;
@@ -45,6 +47,8 @@ export const SCENE_NAMES: Record<Scene, string> = {
   work: "バイト・職場の休憩",
   circle: "サークル・集まりの初対面",
   shop: "店や美容院",
+  office: "職場・バイトのやりとり",
+  assert: "頼む・断る",
 };
 
 const classScript: Script = {
@@ -372,6 +376,264 @@ const shopScript: Script = {
   },
 };
 
-export const SCRIPTS: Script[] = [classScript, workScript, circleScript, shopScript];
+const officeAsk: Script = {
+  id: "office-ask",
+  scene: "office",
+  title: "わからないことを聞いて、報告する",
+  setting: "バイト先で、新しい作業を任された。やり方の途中がわからず、手が止まっている。近くに先輩がいる。",
+  partner: "バイトの先輩",
+  voice: { pitch: 0.95, rate: 1.05 },
+  start: "o1",
+  nodes: {
+    o1: {
+      context: "15 分ほど手が止まっている。先輩は少し忙しそう。",
+      choices: [
+        { text: "すみません、いま少しいいですか？ 棚の補充、在庫表の見方がわからなくて", next: "o2", tone: "good", skill: "askhelp", note: "相手の都合を一言聞いてから、何がわからないかを具体的に言っている。" },
+        { text: "(もう少し自分で考える)", next: "o1c", tone: "closed", note: "自分で考えるのは大切。ただ、決めた時間を過ぎたら聞くほうが、自分にも相手にも早い。" },
+        { text: "すみません…全然わからないんですけど", next: "o2b", tone: "ok", skill: "askhelp", note: "聞けたのはよい。どこがわからないかを添えると、相手は短く答えられる。" },
+      ],
+    },
+    o1c: {
+      context: "さらに 10 分たった。先輩がこちらに気づいた。",
+      says: "あれ、まだそこやってる？ 何か困ってる？",
+      choices: [
+        { text: "はい、実は在庫表の見方がわからなくて止まってました", next: "o2", tone: "good", skill: "askhelp", note: "聞かれたときに正直に言えれば十分。次は自分から声をかけてみましょう。" },
+        { text: "いえ、大丈夫です", next: "o1x", tone: "closed", note: "大丈夫でないときの「大丈夫です」は、問題を先送りにしやすい。" },
+      ],
+    },
+    o1x: {
+      says: "そう？ わからなかったら、いつでも聞いてね。",
+      choices: [
+        { text: "あ、やっぱり一ついいですか？ 在庫表の見方なんですけど", next: "o2", tone: "good", skill: "askhelp", note: "一度断ってからでも、言い直せる。相手はたいてい気にしていない。" },
+        { text: "はい、ありがとうございます", next: "oEndQuiet", tone: "closed", note: "今日はここまで。次は「どこまでできたか」を一言にまとめてから声をかけてみましょう。" },
+      ],
+    },
+    o2: {
+      says: "ああ、これね。この列が今ある数で、こっちが補充する数。わかりにくいよね。",
+      choices: [
+        { text: "なるほど、こっちが補充する数なんですね。ありがとうございます", next: "o3", tone: "good", skill: "reflect", note: "聞いた内容を短く言い直すと、理解が合っているか確かめられる。" },
+        { text: "はい", next: "o3", tone: "ok", note: "返事としては十分。わかったことを一言くり返すと、行き違いを防げる。" },
+      ],
+    },
+    o2b: {
+      says: "どのへんがわからない？",
+      choices: [
+        { text: "在庫表の、どの数を見ればいいかがわからなくて", next: "o2", tone: "good", skill: "askhelp", note: "わからない場所が具体的になった。" },
+        { text: "えっと…全部です", next: "o2", tone: "ok", note: "本当に全部なら、それでもよい。相手が順に説明してくれる。" },
+      ],
+    },
+    o3: {
+      context: "30 分後、補充が終わった。先輩はレジにいる。",
+      choices: [
+        { text: "棚の補充終わりました。一つだけ、洗剤の在庫が足りなかったです", next: "o4", tone: "good", skill: "askhelp", note: "結論が先、気になる点が後。相手が一言で判断できる。" },
+        { text: "(言わずに次の作業に移る)", next: "o3c", tone: "closed", note: "終わったことを伝えないと、相手は確認しに来ることになる。" },
+        { text: "えっと、さっきの補充なんですけど、最初に飲み物の棚をやって、それから…", next: "o4", tone: "ok", note: "経緯から話すと長くなる。「終わりました」を先に言うと伝わりやすい。" },
+      ],
+    },
+    o3c: {
+      says: "あ、補充どうなった？",
+      choices: [
+        { text: "終わりました。洗剤だけ在庫が足りなかったです", next: "o4", tone: "good", skill: "askhelp", note: "聞かれてからでも、結論から答えられれば十分。" },
+      ],
+    },
+    o4: {
+      says: "ありがとう、助かった。洗剤は明日入るから大丈夫。",
+      choices: [
+        { text: "わかりました。在庫表の見方、教えてもらえて助かりました", next: "oEnd", tone: "good", skill: "ending", note: "具体的にお礼を言うと、次も聞きやすい関係になる。" },
+        { text: "はい", next: "oEnd", tone: "ok", note: "自然な終わり方。" },
+      ],
+    },
+    oEnd: { says: "また何かあったら聞いてね。", end: true },
+    oEndQuiet: { context: "わからないまま作業を続けた。次は 15 分で声をかけると決めておくと楽になる。", end: true },
+  },
+};
+
+const officeMistake: Script = {
+  id: "office-mistake",
+  scene: "office",
+  title: "ミスを伝える",
+  setting: "バイト先で、予約の時間を一つ間違えて伝えていたことに気づいた。店長は事務所にいる。",
+  partner: "店長",
+  voice: { pitch: 0.9, rate: 1.0 },
+  start: "m1",
+  nodes: {
+    m1: {
+      context: "気づいたのは 5 分前。まだお客さんは来ていない。",
+      choices: [
+        { text: "店長、すみません。14 時の予約を、お客さんに 15 時と伝えてしまいました", next: "m2", tone: "good", skill: "askhelp", note: "事実を先に、短く伝えている。早いほど打てる手が多い。" },
+        { text: "(お客さんが来るまで様子を見る)", next: "m1c", tone: "closed", note: "様子を見るほど、打てる手は減っていく。" },
+        { text: "あの、本当にすみません、私いつもこういうことしてしまって…", next: "m2b", tone: "ok", note: "謝る気持ちは伝わる。ただ、相手が最初に知りたいのは何が起きたか。" },
+      ],
+    },
+    m1c: {
+      context: "15 分後。お客さんから「何時でしたっけ？」と電話があったと、店長が言いに来た。",
+      says: "さっき予約のお客さんから電話があったんだけど、時間がずれてるみたいで。何か知ってる？",
+      choices: [
+        { text: "すみません、私が 15 時と伝えてしまっていました", next: "m2", tone: "good", skill: "askhelp", note: "聞かれたときに事実を言えれば、立て直せる。" },
+        { text: "えっ、どうしてでしょう…", next: "m1x", tone: "closed", note: "知っていることを言わないと、相手が原因を探すことになる。" },
+      ],
+    },
+    m1x: {
+      context: "店長が予約表を見ている。いまからでも言える。",
+      choices: [
+        { text: "…すみません、実は私が時間を間違えて伝えていました", next: "m2", tone: "good", skill: "askhelp", note: "少し遅れても、自分から言い直せたことは大きい。" },
+      ],
+    },
+    m2: {
+      says: "そっか、教えてくれてありがとう。どうしようか。",
+      choices: [
+        { text: "いまからお客さんに電話して、14 時で大丈夫か確認しましょうか", next: "m3", tone: "good", skill: "askhelp", note: "対応案を添えると、相手は判断しやすい。" },
+        { text: "どうしたらいいでしょう…", next: "m3b", tone: "ok", note: "相談するのはよい。自分の案を一つ添えられるとなおよい。" },
+      ],
+    },
+    m2b: {
+      says: "まあまあ、落ち着いて。何があったの？",
+      choices: [
+        { text: "14 時の予約を、お客さんに 15 時と伝えてしまいました", next: "m2", tone: "good", skill: "askhelp", note: "事実が伝わった。ここから一緒に考えられる。" },
+      ],
+    },
+    m3b: {
+      says: "お客さんに電話して、どっちの時間がいいか聞いてみてくれる？",
+      choices: [
+        { text: "わかりました、すぐ電話します", next: "m3", tone: "good", note: "指示を受けて、すぐ動いている。" },
+      ],
+    },
+    m3: {
+      context: "電話したら、お客さんは 15 時のほうが都合がいいとのこと。15 時の枠は空いていた。",
+      choices: [
+        { text: "お客さん、15 時でいいそうです。予約表を直しておきました", next: "m4", tone: "good", skill: "askhelp", note: "結果を結論から報告している。" },
+        { text: "(予約表だけ直しておく)", next: "m4b", tone: "ok", note: "直したことも伝えておくと、相手は安心できる。" },
+      ],
+    },
+    m4b: {
+      says: "さっきの件、どうなった？",
+      choices: [{ text: "15 時で大丈夫だそうで、予約表も直しました", next: "m4", tone: "good", skill: "askhelp", note: "聞かれてからでも、結論から答えられた。" }],
+    },
+    m4: {
+      says: "了解、ありがとう。早めに言ってくれて助かったよ。",
+      choices: [
+        { text: "すみませんでした。次から、予約は復唱して確認します", next: "mEnd", tone: "good", note: "次にどうするかを一言添えると、話がきれいに終わる。" },
+        { text: "本当にすみません…", next: "mEnd", tone: "ok", note: "謝るのは自然。何度も謝るより、次の工夫を一つ言うほうが相手も安心する。" },
+      ],
+    },
+    mEnd: { says: "うん、よろしくね。", end: true },
+  },
+};
+
+const assertDecline: Script = {
+  id: "assert-decline",
+  scene: "assert",
+  title: "誘いを断る",
+  setting: "授業のあと、同じゼミの人から週末のカラオケに誘われた。疲れていて、今回は行きたくない。",
+  partner: "ゼミの友人",
+  voice: { pitch: 1.1, rate: 1.1 },
+  start: "d1",
+  nodes: {
+    d1: {
+      says: "ねえ、土曜にみんなでカラオケ行くんだけど、来ない？",
+      choices: [
+        { text: "誘ってくれてありがとう。今回はやめておくね", next: "d2", tone: "good", skill: "decline", note: "感謝と結論を先に。理由は言わなくても失礼ではない。" },
+        { text: "あー、土曜か…どうだろう…", next: "d1c", tone: "closed", note: "あいまいにすると、相手は返事を待ち続けることになる。" },
+        { text: "うん、行く行く(本当は行きたくない)", next: "d1y", tone: "closed", note: "断るのを避けるのは安全行動の一つ。断られた側は、断る側が思うより気にしていないことが多い。" },
+      ],
+    },
+    d1c: {
+      says: "まだわからない感じ？ 決まったら教えて！",
+      choices: [
+        { text: "ごめん、やっぱり今回はやめておくね。誘ってくれてありがとう", next: "d2", tone: "good", skill: "decline", note: "迷ったあとでも、はっきり言い直せた。" },
+        { text: "うん、また連絡するね", next: "d1y", tone: "ok", note: "あとで断るのも一つ。その場で言えると、あとで気にする時間が減る。" },
+      ],
+    },
+    d1y: {
+      context: "その日の夜、まだ気が重い。いまからでも連絡はできる。",
+      choices: [
+        { text: "(メッセージで)土曜なんだけど、ごめん、今回はやめておくね。誘ってくれてありがとう", next: "d2", tone: "good", skill: "decline", note: "あとからでも断れる。早めに伝えるほど、相手も予定を立てやすい。" },
+        { text: "(そのまま行く)", next: "dEndGo", tone: "ok", note: "行ってみたら楽しいこともある。ただ、毎回無理をしていたら、断る実験をしてみる価値がある。" },
+      ],
+    },
+    d2: {
+      says: "そっかー、残念。何か予定あるの？",
+      choices: [
+        { text: "ちょっと最近疲れてて、週末はゆっくりしたくて", next: "d3", tone: "good", skill: "decline", note: "正直で短い理由。言いわけを作り込まなくてよい。" },
+        { text: "うん、ちょっとね", next: "d3", tone: "ok", skill: "decline", note: "言いたくなければ、詳しく話さなくてよい。" },
+        { text: "えっと、親戚が来るかもしれなくて、それにバイトも入るかもで…", next: "d3", tone: "closed", note: "理由を重ねるほど話が長くなり、断りにくくなる。" },
+      ],
+    },
+    d3: {
+      says: "そっか、了解！ また次の機会にね。",
+      choices: [
+        { text: "うん、また誘って。今度ごはんとかなら行きたいな", next: "dEnd", tone: "good", skill: "decline", note: "代わりの案を添えると、関係が続く。行きたくないときは、無理に案を出さなくてよい。" },
+        { text: "うん、ありがとう", next: "dEnd", tone: "good", note: "これで十分。相手は思っているより気にしていない。" },
+      ],
+    },
+    dEnd: { says: "うん、またね！", end: true },
+    dEndGo: { context: "土曜はカラオケに行った。次に誘われたときは、断る練習の機会にしてもよい。", end: true },
+  },
+};
+
+const assertRequest: Script = {
+  id: "assert-request",
+  scene: "assert",
+  title: "グループ課題で頼む",
+  setting: "グループ課題の締め切りが来週。スライドが 1 枚、まだ誰の担当にもなっていない。メンバーの一人と話す。",
+  partner: "グループのメンバー",
+  voice: { pitch: 1.0, rate: 1.05 },
+  start: "r1",
+  nodes: {
+    r1: {
+      context: "相手は、そのスライドの内容を調べてくれた人。",
+      choices: [
+        { text: "〇〇さん、まとめの前のスライド 1 枚、木曜までにお願いできますか？ 調べてくれた内容なので", next: "r2", tone: "good", skill: "request", note: "何を・いつまでに・なぜ、が入っている。相手は判断しやすい。" },
+        { text: "あの…もしよかったらでいいんですけど、手が空いてたら…", next: "r2b", tone: "ok", note: "遠慮が伝わるのはよい。ただ、何を頼んでいるかが相手にわからない。" },
+        { text: "(自分で全部作る)", next: "r1c", tone: "closed", note: "頼むのを避けるのは安全行動の一つ。頼まれた側は、頼む側が思うより引き受けてくれやすい。" },
+      ],
+    },
+    r1c: {
+      context: "その夜、ほかの作業もあって間に合いそうにない。",
+      choices: [
+        { text: "(メッセージで)ごめん、スライド 1 枚お願いできないかな。木曜までだと助かる", next: "r2", tone: "good", skill: "request", note: "一度ためらっても、頼み直せる。" },
+        { text: "(徹夜で仕上げる)", next: "rEndAlone", tone: "closed", note: "今回は乗り切れても、毎回は続かない。次は早めに頼む実験をしてみましょう。" },
+      ],
+    },
+    r2b: {
+      says: "うん、いいよ。何をすればいい？",
+      choices: [
+        { text: "まとめの前のスライドを 1 枚、木曜までにお願いしたくて", next: "r2", tone: "good", skill: "request", note: "具体的になった。相手は引き受けやすい。" },
+      ],
+    },
+    r2: {
+      says: "木曜かあ…水曜まで別の課題があって、ちょっときついかも。",
+      choices: [
+        { text: "そっか。じゃあ金曜の朝まででも大丈夫？", next: "r3", tone: "good", skill: "request", note: "相手の事情を受けて、条件を調整している。" },
+        { text: "あ、じゃあ大丈夫です、自分でやります", next: "r2x", tone: "closed", note: "すぐ引っ込めると、相手が提案する余地もなくなる。" },
+        { text: "でも、みんなやってるので…", next: "r3b", tone: "closed", note: "押しつけると、引き受けてもらえても関係がぎくしゃくしやすい。" },
+      ],
+    },
+    r2x: {
+      says: "え、いいの？ 金曜の朝までならできるよ。",
+      choices: [
+        { text: "本当？ じゃあ金曜の朝までにお願いしたい", next: "r3", tone: "good", skill: "request", note: "相手からの提案を受けられた。頼みごとは、話しながら決めればよい。" },
+      ],
+    },
+    r3b: {
+      says: "うーん…まあ、なんとかやってみる。",
+      context: "相手の声が少し硬い。",
+      choices: [
+        { text: "ごめん、急かしたね。金曜の朝まででも大丈夫だよ", next: "r3", tone: "good", skill: "request", note: "言い直せば、関係は戻せる。" },
+      ],
+    },
+    r3: {
+      says: "それなら大丈夫。調べたやつまとめるね。",
+      choices: [
+        { text: "ありがとう、助かる！ 何か手伝えることがあったら言ってね", next: "rEnd", tone: "good", skill: "ending", note: "感謝と、こちらからも手を貸す一言。頼み合える関係になる。" },
+        { text: "ありがとうございます", next: "rEnd", tone: "good", note: "感謝を伝えられれば十分。" },
+      ],
+    },
+    rEnd: { says: "うん、こちらこそ。", end: true },
+    rEndAlone: { context: "一人で仕上げた。次は締め切りの 1 週間前に、1 つだけ頼んでみましょう。", end: true },
+  },
+};
+
+export const SCRIPTS: Script[] = [classScript, workScript, circleScript, shopScript, officeAsk, officeMistake, assertDecline, assertRequest];
 
 export const scriptById = (id: string) => SCRIPTS.find((s) => s.id === id);

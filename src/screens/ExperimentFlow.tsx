@@ -2,12 +2,12 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect, useState } from "react";
 import { Back, Chips, Scale, Steps } from "../components/ui";
 import { drillById } from "../content/drills";
-import { FOCUS_TASKS, LEVEL_NAMES, MISSIONS, SAFETY_BEHAVIORS, missionById } from "../content/missions";
+import { FOCUS_TASKS, MISSIONS, SAFETY_BEHAVIORS, TRACKS, TRACK_INFO, missionById, trackOfMission } from "../content/missions";
 import { localDate } from "../lib/date";
 import { db, getProfile } from "../lib/db";
 import { useNav } from "../lib/nav";
 import { gap, recommendLevel } from "../lib/stats";
-import type { Experiment, Level } from "../lib/types";
+import type { Experiment, Level, Track } from "../lib/types";
 
 type Phase = "choose" | "predict" | "ready" | "result" | "gap";
 const PHASES: Phase[] = ["choose", "predict", "ready", "result", "gap"];
@@ -22,12 +22,13 @@ export function ExperimentFlow({ resumeId, missionId }: { resumeId?: number; mis
   const [phase, setPhase] = useState<Phase>(resumeId ? "ready" : missionId ? "predict" : "choose");
   const [exp, setExp] = useState<Experiment | null>(null);
   const [viewLevel, setViewLevel] = useState<Level | null>(null);
+  const [viewTrack, setViewTrack] = useState<Track | null>(null);
   const [custom, setCustom] = useState("");
 
   // 予想フォーム
-  const [mission, setMission] = useState<{ id?: string; title: string; level: Level } | null>(() => {
+  const [mission, setMission] = useState<{ id?: string; title: string; level: Level; track: Track } | null>(() => {
     const m = missionById(missionId);
-    return m ? { id: m.id, title: m.title, level: m.level } : null;
+    return m ? { id: m.id, title: m.title, level: m.level, track: trackOfMission(m) } : null;
   });
   const [prediction, setPrediction] = useState("");
   const [confidence, setConfidence] = useState(60);
@@ -46,7 +47,8 @@ export function ExperimentFlow({ resumeId, missionId }: { resumeId?: number; mis
   }, [resumeId]);
 
   if (!exps || !profile) return null;
-  const rec = recommendLevel(exps, sleep?.quality);
+  const track: Track = viewTrack ?? profile.track ?? "chat";
+  const rec = recommendLevel(exps, sleep?.quality, track);
   const level = viewLevel ?? rec.level;
   const safetyOptions = profile.safetyBehaviors.length ? profile.safetyBehaviors : SAFETY_BEHAVIORS;
 
@@ -56,6 +58,7 @@ export function ExperimentFlow({ resumeId, missionId }: { resumeId?: number; mis
       createdAt: Date.now(),
       status: "planned",
       missionId: mission.id,
+      track: mission.track,
       title: mission.title,
       level: mission.level,
       prediction: prediction.trim(),
@@ -98,6 +101,21 @@ export function ExperimentFlow({ resumeId, missionId }: { resumeId?: number; mis
       {phase === "choose" && (
         <section>
           <h1>課題を選ぶ</h1>
+          <div className="row" aria-label="場面">
+            {TRACKS.map((t) => (
+              <button
+                key={t}
+                className="chip"
+                aria-pressed={t === track}
+                onClick={() => {
+                  setViewTrack(t);
+                  setViewLevel(null);
+                }}
+              >
+                {TRACK_INFO[t].name}
+              </button>
+            ))}
+          </div>
           <p className="small muted">{rec.reason}</p>
           <div className="row" role="tablist" aria-label="段階">
             {([1, 2, 3, 4, 5, 6] as Level[]).map((l) => (
@@ -106,14 +124,14 @@ export function ExperimentFlow({ resumeId, missionId }: { resumeId?: number; mis
               </button>
             ))}
           </div>
-          <h2>段階 {level}: {LEVEL_NAMES[level]}</h2>
-          {MISSIONS.filter((x) => x.level === level).map((x) => (
+          <h2>段階 {level}: {TRACK_INFO[track].levels[level]}</h2>
+          {MISSIONS.filter((x) => trackOfMission(x) === track && x.level === level).map((x) => (
             <button
               key={x.id}
               className="option"
               style={{ margin: "6px 0" }}
               onClick={() => {
-                setMission({ id: x.id, title: x.title, level: x.level });
+                setMission({ id: x.id, title: x.title, level: x.level, track });
                 setPhase("predict");
               }}
             >
@@ -129,7 +147,7 @@ export function ExperimentFlow({ resumeId, missionId }: { resumeId?: number; mis
               style={{ marginTop: 8 }}
               disabled={!custom.trim()}
               onClick={() => {
-                setMission({ title: custom.trim(), level });
+                setMission({ title: custom.trim(), level, track });
                 setPhase("predict");
               }}
             >
