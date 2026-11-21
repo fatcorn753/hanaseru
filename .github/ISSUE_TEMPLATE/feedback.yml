@@ -1,0 +1,44 @@
+name: 使ってみた感想
+description: 続けやすさ・わかりにくさ・役に立った点を教えてください
+title: "[感想] "
+labels: ["feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ありがとうございます。この内容は**誰でも読める場所に公開されます**。
+        実験の記録の中身や、名前・学校・職場など個人がわかることは書かないでください。
+  - type: dropdown
+    id: device
+    attributes:
+      label: 使った端末
+      options: [iPhone, Android, PC, その他]
+    validations:
+      required: true
+  - type: dropdown
+    id: period
+    attributes:
+      label: 使った期間
+      options: [初日だけ, 2〜6 日, 1〜3 週間, 1 か月以上]
+    validations:
+      required: true
+  - type: dropdown
+    id: continue
+    attributes:
+      label: これからも使いたいですか
+      options: [使いたい, たぶん使う, たぶん使わない, 使わない]
+    validations:
+      required: true
+  - type: textarea
+    id: good
+    attributes:
+      label: 役に立った・よかったところ
+  - type: textarea
+    id: stop
+    attributes:
+      label: 使うのをやめたくなった・面倒だったところ
+      description: 継続のしやすさの改善に一番役立ちます
+  - type: textarea
+    id: confusing
+    attributes:
+      label: わかりにくかった画面や言葉

@@ -153,3 +153,4 @@ video { width: 100%; border-radius: var(--radius); background: #000; }
 @media (prefers-reduced-motion: reduce) {
   .pacer { transition: none !important; }
 }
+a.btn { display: inline-flex; align-items: center; text-decoration: none; color: var(--accent); }

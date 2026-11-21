@@ -45,6 +45,11 @@ npm run build    # 型チェック + 本番ビルド(dist/)
 
 GitHub Pages のサブパスで配信するときは `BASE_PATH=/hanaseru/ npm run build`。
 
+### 感想・不具合と実機確認
+
+- 感想と不具合は GitHub Issues のテンプレート(`.github/ISSUE_TEMPLATE/`)で受け付けます。アプリの設定画面と記録画面からリンクしています。
+- 実機での確認手順は [docs/device-test-checklist.md](docs/device-test-checklist.md) にあります。
+
 ### 内容を増やす
 
 課題は `src/content/missions.ts`、ドリルは `src/content/drills.ts` にあります。`npm test` が ID の重複や参照切れを検査します。追加するときは根拠となる文献を添えてください。

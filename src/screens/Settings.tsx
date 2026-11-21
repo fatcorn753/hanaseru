@@ -5,6 +5,7 @@ import { HELP_LINKS } from "../content/foundation";
 import { SAFETY_BEHAVIORS } from "../content/missions";
 import { exportAll, getProfile, importAll, saveProfile, wipeAll } from "../lib/db";
 import { localDate } from "../lib/date";
+import { LINKS } from "../lib/links";
 import { useNav } from "../lib/nav";
 
 export function Settings() {
@@ -81,6 +82,15 @@ export function Settings() {
         すべて削除する
       </button>
       {msg && <p className="feedback good" role="status">{msg}</p>}
+
+      <h2>感想・不具合を送る</h2>
+      <p className="small">
+        続けにくかった点や、わかりにくかった言葉を教えてもらえると、改善に一番役立ちます。送り先は GitHub で、内容は公開されます(GitHub のアカウントが必要です)。記録の中身や、個人がわかることは書かないでください。
+      </p>
+      <div className="row">
+        <a className="btn" href={LINKS.feedback} target="_blank" rel="noreferrer">感想を送る</a>
+        <a className="btn" href={LINKS.bug} target="_blank" rel="noreferrer">不具合を報告する</a>
+      </div>
 
       <h2>このアプリについて</h2>
       <p className="small">

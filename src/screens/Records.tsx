@@ -1,5 +1,6 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../lib/db";
+import { LINKS } from "../lib/links";
 import { useNav } from "../lib/nav";
 import { done, heatmap, summarize } from "../lib/stats";
 import type { Experiment } from "../lib/types";
@@ -99,6 +100,13 @@ export function Records() {
             ))}
           </div>
         </>
+      )}
+
+      {s.count >= 3 && (
+        <div className="card accent small">
+          <p>3 回以上実験しましたね。続けやすさや、わかりにくかったところを教えてもらえませんか？</p>
+          <a href={LINKS.feedback} target="_blank" rel="noreferrer">感想を送る(GitHub・内容は公開されます)</a>
+        </div>
       )}
 
       {videos.length > 0 && (
