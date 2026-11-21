@@ -8,6 +8,7 @@ import { db, getProfile } from "../lib/db";
 import { useNav } from "../lib/nav";
 import { gap, recommendLevel } from "../lib/stats";
 import type { Experiment, Level, Track } from "../lib/types";
+import { IconStar } from "../components/icons";
 
 type Phase = "choose" | "predict" | "ready" | "result" | "gap";
 const PHASES: Phase[] = ["choose", "predict", "ready", "result", "gap"];
@@ -120,7 +121,13 @@ export function ExperimentFlow({ resumeId, missionId }: { resumeId?: number; mis
           <div className="row" role="tablist" aria-label="段階">
             {([1, 2, 3, 4, 5, 6] as Level[]).map((l) => (
               <button key={l} className="chip" aria-pressed={l === level} onClick={() => setViewLevel(l)}>
-                {l}{l === rec.level ? "★" : ""}
+                {l}
+                {l === rec.level && (
+                  <>
+                    <IconStar />
+                    <span className="visually-hidden">(おすすめ)</span>
+                  </>
+                )}
               </button>
             ))}
           </div>

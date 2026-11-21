@@ -19,8 +19,8 @@ export default defineConfig({
         short_name: "はなせる",
         description: "会話への恐れを、行動実験で少しずつほどく練習アプリ",
         lang: "ja",
-        theme_color: "#2f6f5e",
-        background_color: "#f7f5f0",
+        theme_color: "#f7f7f3",
+        background_color: "#f7f7f3",
         display: "standalone",
         start_url: ".",
         icons: [

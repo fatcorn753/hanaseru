@@ -1,5 +1,6 @@
 import { useLiveQuery } from "dexie-react-hooks";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { IconChart, IconChat, IconFlask, IconHome, IconWind } from "./components/icons";
 import { db, getProfile } from "./lib/db";
 import { NavContext, type Route } from "./lib/nav";
 import { Dojo } from "./screens/Dojo";
@@ -15,12 +16,12 @@ import { Talk } from "./screens/Talk";
 import { VideoReviewScreen } from "./screens/VideoReview";
 import { WeeklyReview } from "./screens/WeeklyReview";
 
-const TABS: { name: Route["name"]; label: string; ico: string }[] = [
-  { name: "home", label: "ホーム", ico: "⌂" },
-  { name: "experiment", label: "実験", ico: "◎" },
-  { name: "dojo", label: "道場", ico: "◇" },
-  { name: "foundation", label: "整える", ico: "○" },
-  { name: "records", label: "記録", ico: "▤" },
+const TABS: { name: Route["name"]; label: string; ico: ReactNode }[] = [
+  { name: "home", label: "ホーム", ico: <IconHome /> },
+  { name: "experiment", label: "実験", ico: <IconFlask /> },
+  { name: "dojo", label: "道場", ico: <IconChat /> },
+  { name: "foundation", label: "整える", ico: <IconWind /> },
+  { name: "records", label: "記録", ico: <IconChart /> },
 ];
 
 export function App() {
@@ -65,8 +66,8 @@ export function App() {
       <nav className="tabs" aria-label="メイン">
         <div className="inner">
           {TABS.map((t) => (
-            <button key={t.name} aria-current={route.name === t.name || ((route.name === "talk" || route.name === "rehearsal") && t.name === "dojo") ? "page" : undefined} onClick={() => go({ name: t.name } as Route)}>
-              <span className="ico" aria-hidden>{t.ico}</span>
+            <button key={t.name} type="button" aria-current={route.name === t.name || ((route.name === "talk" || route.name === "rehearsal") && t.name === "dojo") ? "page" : undefined} onClick={() => go({ name: t.name } as Route)}>
+              {t.ico}
               {t.label}
             </button>
           ))}

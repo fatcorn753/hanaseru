@@ -5,6 +5,7 @@ import { db, getProfile, saveProfile } from "../lib/db";
 import { useNav } from "../lib/nav";
 import { DEFAULT_WEEKLY_GOAL, goalProgress, pendingPep, pendingReview, recommendLevel, summarize, weekStart, weekSummary } from "../lib/stats";
 import type { SleepQuality } from "../lib/types";
+import { IconCheck } from "../components/icons";
 
 const SLEEP: { q: SleepQuality; label: string }[] = [
   { q: "poor", label: "足りない" },
@@ -97,7 +98,7 @@ export function Home() {
         <button className="td-btn block" data-variant="primary" type="button" onClick={() => go({ name: "experiment" })}>実験を始める</button>
       </div>
 
-      <p className="small">{goal.state === "todo" ? "" : "✓ "}{goal.text}</p>
+      <p className="small row" style={{ gap: "var(--space-1)" }}>{goal.state !== "todo" && <span style={{ color: "var(--success-text)" }}><IconCheck /></span>}{goal.text}</p>
       {profile.weeklyFocus && <p className="small">今週意識すること: {profile.weeklyFocus}</p>}
       {profile.ifThen && (
         <p className="muted small">あなたのきっかけ: もし{profile.ifThen.when}、{profile.ifThen.then}。</p>
