@@ -7,6 +7,8 @@ import { exportAll, getProfile, importAll, saveProfile, wipeAll } from "../lib/d
 import { localDate } from "../lib/date";
 import { LINKS } from "../lib/links";
 import { useNav } from "../lib/nav";
+import { DEFAULT_WEEKLY_GOAL } from "../lib/stats";
+import { ReminderSection } from "../components/ReminderSection";
 
 export function Settings() {
   const go = useNav();
@@ -59,6 +61,23 @@ export function Settings() {
       >
         保存
       </button>
+
+      <ReminderSection profile={profile} />
+
+      <h2>週の目標</h2>
+      <p className="small muted">1 回分の休み枠つきです。目標より 1 回少なくても達成として扱います。</p>
+      <div className="row">
+        {[1, 2, 3, 4, 5, 7].map((n) => (
+          <button
+            key={n}
+            className="chip"
+            aria-pressed={(profile.weeklyGoal ?? DEFAULT_WEEKLY_GOAL) === n}
+            onClick={() => saveProfile({ ...profile, weeklyGoal: n })}
+          >
+            週 {n} 回
+          </button>
+        ))}
+      </div>
 
       <h2>自分のお守り行動</h2>
       <Chips options={SAFETY_BEHAVIORS} value={profile.safetyBehaviors} onChange={(v) => saveProfile({ ...profile, safetyBehaviors: v })} />

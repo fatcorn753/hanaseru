@@ -3,7 +3,7 @@ import { LEVEL_NAMES } from "../content/missions";
 import { localDate } from "../lib/date";
 import { db, getProfile } from "../lib/db";
 import { useNav } from "../lib/nav";
-import { pendingPep, recommendLevel, summarize } from "../lib/stats";
+import { DEFAULT_WEEKLY_GOAL, goalProgress, pendingPep, pendingReview, recommendLevel, summarize, weekStart, weekSummary } from "../lib/stats";
 import type { SleepQuality } from "../lib/types";
 
 const SLEEP: { q: SleepQuality; label: string }[] = [
@@ -24,6 +24,9 @@ export function Home() {
   const pep = pendingPep(exps);
   const planned = exps.filter((x) => x.status === "planned").sort((a, b) => b.createdAt - a.createdAt);
   const s = summarize(exps);
+  const review = pendingReview(exps, profile.lastReviewedWeek);
+  const thisWeek = weekSummary(exps, weekStart());
+  const goal = goalProgress(thisWeek.count, profile.weeklyGoal ?? DEFAULT_WEEKLY_GOAL);
 
   return (
     <div>
@@ -40,6 +43,17 @@ export function Home() {
             <button className="primary" onClick={() => go({ name: "pep", experimentId: pep.id! })}>2 分で整える</button>
             <button onClick={() => db.experiments.update(pep.id!, { pepChecked: true })}>していない</button>
           </div>
+        </div>
+      )}
+
+      {review && (
+        <div className="card accent">
+          <p>
+            <strong>先週の振り返り</strong> — 実験 {review.count} 回、最悪の予想が外れたのは {review.disconfirmed} 回。
+          </p>
+          <button className="primary" onClick={() => go({ name: "review", weekStart: review.start })}>
+            2 分で振り返る
+          </button>
         </div>
       )}
 
@@ -75,6 +89,8 @@ export function Home() {
         <button className="primary block" onClick={() => go({ name: "experiment" })}>実験を始める</button>
       </div>
 
+      <p className="small">{goal.state === "todo" ? "" : "✓ "}{goal.text}</p>
+      {profile.weeklyFocus && <p className="small">今週意識すること: {profile.weeklyFocus}</p>}
       {profile.ifThen && (
         <p className="muted small">あなたのきっかけ: もし{profile.ifThen.when}、{profile.ifThen.then}。</p>
       )}

@@ -101,3 +101,68 @@ export function pendingPep(xs: Experiment[], now = Date.now()) {
     (x) => !x.pepChecked && x.doneAt !== undefined && now - x.doneAt >= 0.25 * HOUR && now - x.doneAt <= 48 * HOUR,
   );
 }
+
+/** その日を含む週の月曜 0:00(端末のローカル時刻) */
+export function weekStart(t: number = Date.now()): number {
+  const d = new Date(t);
+  d.setHours(0, 0, 0, 0);
+  const dow = (d.getDay() + 6) % 7; // 月曜を 0 にする
+  d.setDate(d.getDate() - dow);
+  return d.getTime();
+}
+
+export const weekKey = (t: number = Date.now()) => localDate(weekStart(t));
+
+export interface WeekSummary {
+  key: string;
+  /** 週の月曜 0:00 のタイムスタンプ */
+  start: number;
+  count: number;
+  /** 最悪の予想が外れた(cameTrue<50)回数 */
+  disconfirmed: number;
+  avgBeliefGap: number | null;
+  avgAnxietyGap: number | null;
+  learned: string[];
+  dropped: string[];
+}
+
+/** weekStartMs から 7 日間の、終わった実験のまとめ */
+export function weekSummary(xs: Experiment[], weekStartMs: number): WeekSummary {
+  const end = addDays(weekStartMs, 7);
+  const w = done(xs).filter((x) => (x.doneAt ?? 0) >= weekStartMs && (x.doneAt ?? 0) < end);
+  return {
+    key: localDate(weekStartMs),
+    start: weekStartMs,
+    count: w.length,
+    disconfirmed: w.filter((x) => (x.cameTrue ?? 100) < 50).length,
+    avgBeliefGap: avg(w.map((x) => gap(x).belief)),
+    avgAnxietyGap: avg(w.map((x) => gap(x).anxiety)),
+    learned: w.filter((x) => x.learned).map((x) => x.learned!),
+    dropped: [...new Set(w.filter((x) => x.safetyBehaviorDropped).map((x) => x.safetyBehaviorDropped!))],
+  };
+}
+
+/**
+ * 振り返りを出すべき週。先週に実験があり、まだ振り返っていなければ先週を返す。
+ * 休んだ週は責めないよう、何も出さない。
+ */
+export function pendingReview(xs: Experiment[], lastReviewed: string | undefined, now = Date.now()) {
+  const prev = addDays(weekStart(now), -7);
+  const key = localDate(prev);
+  if (lastReviewed !== undefined && lastReviewed >= key) return undefined;
+  const s = weekSummary(xs, prev);
+  return s.count > 0 ? s : undefined;
+}
+
+export const DEFAULT_WEEKLY_GOAL = 3;
+
+/**
+ * 週の目標の進み具合。1 回分の休み枠を持たせ、目標より 1 回少なくても達成扱いにする。
+ * 休み枠つきの目標は、厳しい目標より続きやすい(Sharif & Shu 2017)。
+ */
+export function goalProgress(count: number, goal = DEFAULT_WEEKLY_GOAL) {
+  if (count >= goal) return { state: "done" as const, text: `今週の目標 ${goal} 回を達成しました` };
+  if (goal > 1 && count === goal - 1)
+    return { state: "reserve" as const, text: `今週 ${count} 回。休み枠を使えば達成です(もう 1 回できたら満点)` };
+  return { state: "todo" as const, text: `今週 ${count} / ${goal} 回(休み枠 1 回つき)` };
+}

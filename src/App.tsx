@@ -11,6 +11,7 @@ import { Pep } from "./screens/Pep";
 import { Records } from "./screens/Records";
 import { Settings } from "./screens/Settings";
 import { VideoReviewScreen } from "./screens/VideoReview";
+import { WeeklyReview } from "./screens/WeeklyReview";
 
 const TABS: { name: Route["name"]; label: string; ico: string }[] = [
   { name: "home", label: "ホーム", ico: "⌂" },
@@ -51,6 +52,7 @@ export function App() {
     case "records": screen = <Records />; break;
     case "settings": screen = <Settings />; break;
     case "pep": screen = <Pep experimentId={route.experimentId} />; break;
+    case "review": screen = <WeeklyReview weekStart={route.weekStart} />; break;
   }
 
   return (

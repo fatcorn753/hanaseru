@@ -55,6 +55,8 @@ export function Records() {
         </>
       )}
 
+      <button onClick={() => go({ name: "review" })}>今週の振り返り</button>
+
       <h2>この 30 日</h2>
       <div className="heat" role="img" aria-label={`30 日間で実験した日は ${heat.filter((h) => h.count).length} 日`}>
         {heat.map((h) => (

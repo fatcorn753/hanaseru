@@ -1,3 +1,5 @@
+import type { Weekday } from "./ics";
+
 /** 課題のはしごの段階。1 が最も易しい */
 export type Level = 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -88,4 +90,12 @@ export interface Profile {
   ifThen?: { when: string; then: string };
   /** 苦手な場面の自己評価 0–10(診断用ではない) */
   baseline?: Record<string, number>;
+  /** カレンダーに書き出すリマインダーの時刻と曜日 */
+  reminder?: { time: string; days: Weekday[] };
+  /** 週の実験回数の目標。1 回分の休み枠つき(Sharif & Shu 2017 の emergency reserve) */
+  weeklyGoal?: number;
+  /** 振り返りを済ませた週の月曜(YYYY-MM-DD) */
+  lastReviewedWeek?: string;
+  /** 今週意識すること(振り返りで選ぶ) */
+  weeklyFocus?: string;
 }

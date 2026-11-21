@@ -8,7 +8,8 @@ export type Route =
   | { name: "video" }
   | { name: "records" }
   | { name: "settings" }
-  | { name: "pep"; experimentId: number };
+  | { name: "pep"; experimentId: number }
+  | { name: "review"; weekStart?: number };
 
 export const NavContext = createContext<(r: Route) => void>(() => {});
 export const useNav = () => useContext(NavContext);
