@@ -39,7 +39,7 @@ function TalkList() {
         よくある場面の会話を、分かれ道つきで練習します。相手のセリフに、まず自分の言葉で声に出して答えてから、近い返しを選びます。どれを選んでも会話は続きます。
       </p>
 
-      <div className="card">
+      <div className="td-card">
         <p className="small muted">答え方</p>
         <div className="row">
           <button className="chip" aria-pressed={t.voice} onClick={() => set({ voice: true })}>声に出してから選ぶ</button>
@@ -75,7 +75,7 @@ function TalkList() {
       {SCRIPTS.map((s) => {
         const n = logs.filter((l) => l.scriptId === s.id && l.finished).length;
         return (
-          <button key={s.id} className="option" style={{ margin: "6px 0" }} onClick={() => go({ name: "talk", scriptId: s.id })}>
+          <button key={s.id} className="option" style={{ margin: "var(--space-2) 0" }} onClick={() => go({ name: "talk", scriptId: s.id })}>
             <span className="small muted">{SCENE_NAMES[s.scene]}</span>
             <br />
             <strong>{s.title}</strong>
@@ -259,7 +259,7 @@ function TalkRunner({ script }: { script: Script }) {
         <Back onClick={() => go({ name: "talk" })} />
         <p className="small muted">{SCENE_NAMES[script.scene]}</p>
         <h1>{script.title}</h1>
-        <div className="card accent">
+        <div className="td-card" data-tone="accent">
           <p>{script.setting}</p>
           <p className="small muted">相手: {script.partner}</p>
         </div>
@@ -270,7 +270,7 @@ function TalkRunner({ script }: { script: Script }) {
         ) : (
           <p className="small">相手のセリフに、どう返すかを選びます。</p>
         )}
-        <button className="primary block" onClick={begin}>はじめる</button>
+        <button className="td-btn block" data-variant="primary" type="button" onClick={begin}>はじめる</button>
       </div>
     );
 
@@ -300,11 +300,11 @@ function TalkRunner({ script }: { script: Script }) {
       </div>
 
       {phase === "partner" && t.tts && node.says && (
-        <button className="ghost" onClick={skipSpeech}>読み上げをとばす</button>
+        <button className="td-btn" data-variant="ghost" type="button" onClick={skipSpeech}>読み上げをとばす</button>
       )}
 
       {phase === "speak" && (
-        <div className="card accent">
+        <div className="td-card" data-tone="accent">
           <p><strong>あなたの番です。</strong>自分の言葉で、声に出して答えてみましょう。</p>
           {!useRec && mic.current && (
             <div className="meter" aria-hidden="true">
@@ -314,8 +314,8 @@ function TalkRunner({ script }: { script: Script }) {
           {useRec && <p className="small">{heard || "(聞きとり中…)"}</p>}
           <p className="small muted">{elapsed} 秒{!useRec && mic.current ? "。話し終えて少し黙ると、自動で次へ進みます" : ""}</p>
           <div className="row">
-            <button className="primary" onClick={() => void endTurn()}>言い終えた</button>
-            <button className="ghost" onClick={() => void endTurn()}>今回は声に出さない</button>
+            <button className="td-btn" data-variant="primary" type="button" onClick={() => void endTurn()}>言い終えた</button>
+            <button className="td-btn" data-variant="ghost" type="button" onClick={() => void endTurn()}>今回は声に出さない</button>
           </div>
         </div>
       )}
@@ -330,7 +330,7 @@ function TalkRunner({ script }: { script: Script }) {
             <div key={i}>
               <button
                 className={`option ${phase === "picked" && picked === i ? (c.tone === "closed" ? "bad" : "good") : ""}`}
-                style={{ margin: "6px 0" }}
+                style={{ margin: "var(--space-2) 0" }}
                 onClick={() => phase === "choose" && pick(i)}
                 aria-pressed={picked === i}
               >
@@ -343,7 +343,7 @@ function TalkRunner({ script }: { script: Script }) {
             </div>
           ))}
           {phase === "picked" && picked !== null && (
-            <button className="primary block" style={{ marginTop: 8 }} onClick={() => enterNode(node.choices![picked].next)}>
+            <button className="td-btn block" data-variant="primary" type="button" style={{ marginTop: "var(--space-2)" }} onClick={() => enterNode(node.choices![picked].next)}>
               つづける
             </button>
           )}
@@ -353,7 +353,7 @@ function TalkRunner({ script }: { script: Script }) {
       {phase === "done" && (
         <>
           <h2>おつかれさま</h2>
-          <div className="card accent">
+          <div className="td-card" data-tone="accent">
             <p>
               {sum.turns} 回のやりとりのうち、話が広がる返しは {sum.good} 回。
             </p>
@@ -382,7 +382,7 @@ function TalkRunner({ script }: { script: Script }) {
             <>
               <h2>現実で 1 回試す</h2>
               {related.map((m) => (
-                <button key={m.id} className="option" style={{ margin: "6px 0" }} onClick={() => go({ name: "experiment", missionId: m.id })}>
+                <button key={m.id} className="option" style={{ margin: "var(--space-2) 0" }} onClick={() => go({ name: "experiment", missionId: m.id })}>
                   <strong>段階 {m.level}: {m.title}</strong>
                   <br />
                   <span className="small muted">{m.detail}</span>
@@ -390,8 +390,8 @@ function TalkRunner({ script }: { script: Script }) {
               ))}
             </>
           )}
-          <div className="row" style={{ marginTop: 12 }}>
-            <button onClick={() => go({ name: "talk" })}>ほかの場面へ</button>
+          <div className="row" style={{ marginTop: "var(--space-3)" }}>
+            <button className="td-btn" type="button" onClick={() => go({ name: "talk" })}>ほかの場面へ</button>
           </div>
           <Refs refs={["Templeton et al. (2022) PNAS"]} />
         </>

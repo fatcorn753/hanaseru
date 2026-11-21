@@ -107,9 +107,9 @@ export function VideoReviewScreen() {
         <>
           <p>緊張しているとき、人は「自分がどう見えているか」を頭の中のイメージで判断しがちです。そのイメージは、実際の見え方よりずっと悪いことが多いとわかっています。</p>
           <p>1 分だけ自己紹介を録画し、予想と実際を比べます。</p>
-          <div className="card small">録画はこの画面の中だけで再生し、保存も送信もしません。画面を離れると消えます。</div>
+          <div className="td-card small">録画はこの画面の中だけで再生し、保存も送信もしません。画面を離れると消えます。</div>
           {error && <p className="feedback bad">{error}</p>}
-          <button className="primary block" onClick={openCamera}>カメラを使う</button>
+          <button className="td-btn block" data-variant="primary" type="button" onClick={openCamera}>カメラを使う</button>
           <Refs refs={["Harvey et al. (2000) Behaviour Research and Therapy", "Warnock-Parkes et al. (2017) Cognitive and Behavioral Practice"]} />
         </>
       )}
@@ -118,12 +118,12 @@ export function VideoReviewScreen() {
         <>
           <p>お題: <strong>{topic}</strong>(最大 {MAX_SEC} 秒)</p>
           <video ref={live} autoPlay muted playsInline />
-          <div className="row" style={{ marginTop: 8 }}>
+          <div className="row" style={{ marginTop: "var(--space-2)" }}>
             {!recording ? (
-              <button className="primary" onClick={start}>録画を始める</button>
+              <button className="td-btn" data-variant="primary" type="button" onClick={start}>録画を始める</button>
             ) : (
               <>
-                <button className="primary" onClick={() => rec.current?.stop()}>止める</button>
+                <button className="td-btn" data-variant="primary" type="button" onClick={() => rec.current?.stop()}>止める</button>
                 <span className="big-number">{left}</span>
               </>
             )}
@@ -134,29 +134,29 @@ export function VideoReviewScreen() {
       {phase === "predict" && (
         <>
           <p><strong>見る前に</strong>、いまの録画で自分がどう見えているかを予想します。</p>
-          <label htmlFor="img">頭の中の自分の姿を一言で</label>
-          <input id="img" type="text" value={image} onChange={(e) => setImage(e.target.value)} placeholder="例: 顔が真っ赤で、目が泳いでいる" />
+          <label className="td-label" htmlFor="img">頭の中の自分の姿を一言で</label>
+          <input className="td-input" id="img" type="text" value={image} onChange={(e) => setImage(e.target.value)} placeholder="例: 顔が真っ赤で、目が泳いでいる" />
           {ASPECTS.map((a) => (
             <Scale key={a.id} label={a.label} value={predicted[a.id]} onChange={(v) => setPredicted({ ...predicted, [a.id]: v })} max={100} unit="%" low="全く" high="とても" />
           ))}
-          <button className="primary block" style={{ marginTop: 12 }} onClick={() => setPhase("brief")}>予想した</button>
+          <button className="td-btn block" data-variant="primary" type="button" style={{ marginTop: "var(--space-3)" }} onClick={() => setPhase("brief")}>予想した</button>
         </>
       )}
 
       {phase === "brief" && (
-        <div className="card accent stack">
+        <div className="td-card stack" data-tone="accent">
           <p><strong>見るときのルール</strong></p>
           <p>1. 初めて会う他人を見るつもりで見る。</p>
           <p>2. 録画中に感じていたドキドキは思い出さず、画面に映っていることだけを見る。</p>
           <p>3. 欠点を探さない。</p>
-          <button className="primary" onClick={() => setPhase("watch")}>見る</button>
+          <button className="td-btn" data-variant="primary" type="button" onClick={() => setPhase("watch")}>見る</button>
         </div>
       )}
 
       {phase === "watch" && url && (
         <>
           <video src={url} controls playsInline />
-          <button className="primary block" style={{ marginTop: 12 }} onClick={() => setPhase("rate")}>見終わった</button>
+          <button className="td-btn block" data-variant="primary" type="button" style={{ marginTop: "var(--space-3)" }} onClick={() => setPhase("rate")}>見終わった</button>
         </>
       )}
 
@@ -166,13 +166,13 @@ export function VideoReviewScreen() {
           {ASPECTS.map((a) => (
             <Scale key={a.id} label={a.label} value={observed[a.id]} onChange={(v) => setObserved({ ...observed, [a.id]: v })} max={100} unit="%" low="全く" high="とても" />
           ))}
-          <button className="primary block" style={{ marginTop: 12 }} onClick={save}>比べる</button>
+          <button className="td-btn block" data-variant="primary" type="button" style={{ marginTop: "var(--space-3)" }} onClick={save}>比べる</button>
         </>
       )}
 
       {phase === "result" && (
         <>
-          <div className="card">
+          <div className="td-card">
             {ASPECTS.map((a) => (
               <CompareBar key={a.id} label={a.label} before={predicted[a.id]} after={observed[a.id]} max={100} unit="%" beforeLabel="見る前の予想" afterLabel="見たあと" />
             ))}
@@ -180,8 +180,8 @@ export function VideoReviewScreen() {
           {image && <p className="small">頭の中のイメージ: 「{image}」</p>}
           <p>頭の中のイメージと、実際の見え方にはずれがありましたか？会話中に「きっと変に見えている」と感じたら、このずれを思い出してください。</p>
           <div className="row">
-            <button className="primary" onClick={() => go({ name: "home" })}>ホームへ</button>
-            <button onClick={() => go({ name: "records" })}>記録を見る</button>
+            <button className="td-btn" data-variant="primary" type="button" onClick={() => go({ name: "home" })}>ホームへ</button>
+            <button className="td-btn" type="button" onClick={() => go({ name: "records" })}>記録を見る</button>
           </div>
         </>
       )}

@@ -16,21 +16,21 @@ export function Dojo({ drillId }: { drillId?: string }) {
     <div>
       <h1>スキル道場</h1>
       <p className="muted">現実の会話で使う「型」を、ひとりで確かめる場所です。知るだけでは身につきにくいので、終わったら現実で 1 回試しましょう。</p>
-      <div className="card accent">
+      <div className="td-card" data-tone="accent">
         <h3>台本会話</h3>
         <p className="small">雑談・職場での質問や報告・頼む・断るの会話を、声に出して練習します。分かれ道つきで、どの返しでも会話は続きます。</p>
-        <button className="primary" onClick={() => go({ name: "talk" })}>はじめる</button>
+        <button className="td-btn" data-variant="primary" type="button" onClick={() => go({ name: "talk" })}>はじめる</button>
       </div>
-      <div className="card">
+      <div className="td-card">
         <h3>人前で話すリハーサル</h3>
         <p className="small">時間を決めて声に出して話し、話した時間と間を測ります。録音はしません。</p>
-        <button onClick={() => go({ name: "rehearsal" })}>はじめる</button>
+        <button className="td-btn" type="button" onClick={() => go({ name: "rehearsal" })}>はじめる</button>
       </div>
       <h2>型を確かめる</h2>
       {DRILLS.map((x) => {
         const n = attempts?.filter((a) => a.drillId === x.id).length ?? 0;
         return (
-          <button key={x.id} className="option" style={{ margin: "6px 0" }} onClick={() => go({ name: "dojo", drillId: x.id })}>
+          <button key={x.id} className="option" style={{ margin: "var(--space-2) 0" }} onClick={() => go({ name: "dojo", drillId: x.id })}>
             <strong>{x.title}</strong>
             {n > 0 && <span className="small muted">(回答 {n} 回)</span>}
             <br />
@@ -38,10 +38,10 @@ export function Dojo({ drillId }: { drillId?: string }) {
           </button>
         );
       })}
-      <div className="card">
+      <div className="td-card">
         <h3>ビデオで自分を見る</h3>
         <p className="small">自分が思っているほど緊張は外から見えていないことを、録画で確かめます。</p>
-        <button onClick={() => go({ name: "video" })}>はじめる</button>
+        <button className="td-btn" type="button" onClick={() => go({ name: "video" })}>はじめる</button>
       </div>
     </div>
   );
@@ -74,12 +74,12 @@ function DrillRunner({ drill }: { drill: Drill }) {
         <Back onClick={() => go({ name: "dojo" })} />
         <h1>{drill.title}</h1>
         <p>{drill.why}</p>
-        <div className="card accent">
+        <div className="td-card" data-tone="accent">
           <p className="small muted">合言葉</p>
           <p><strong>{drill.rule}</strong></p>
         </div>
         <Refs refs={drill.refs} />
-        <button className="primary block" onClick={() => setI(0)}>{drill.items.length} 問ためす</button>
+        <button className="td-btn block" data-variant="primary" type="button" onClick={() => setI(0)}>{drill.items.length} 問ためす</button>
       </div>
     );
 
@@ -88,7 +88,7 @@ function DrillRunner({ drill }: { drill: Drill }) {
       <div>
         <h1>おつかれさま</h1>
         <p>{drill.items.length} 問中 {score} 問で、よい選択ができました。</p>
-        <div className="card accent">
+        <div className="td-card" data-tone="accent">
           <p className="small muted">合言葉</p>
           <p><strong>{drill.rule}</strong></p>
         </div>
@@ -96,7 +96,7 @@ function DrillRunner({ drill }: { drill: Drill }) {
           <>
             <h2>現実で 1 回試す</h2>
             {related.map((m) => (
-              <button key={m.id} className="option" style={{ margin: "6px 0" }} onClick={() => go({ name: "experiment", missionId: m.id })}>
+              <button key={m.id} className="option" style={{ margin: "var(--space-2) 0" }} onClick={() => go({ name: "experiment", missionId: m.id })}>
                 <strong>段階 {m.level}: {m.title}</strong>
                 <br />
                 <span className="small muted">{m.detail}</span>
@@ -104,7 +104,7 @@ function DrillRunner({ drill }: { drill: Drill }) {
             ))}
           </>
         )}
-        <button style={{ marginTop: 12 }} onClick={() => go({ name: "dojo" })}>道場にもどる</button>
+        <button className="td-btn" type="button" style={{ marginTop: "var(--space-3)" }} onClick={() => go({ name: "dojo" })}>道場にもどる</button>
       </div>
     );
 
@@ -112,7 +112,7 @@ function DrillRunner({ drill }: { drill: Drill }) {
     <div>
       <Back onClick={() => go({ name: "dojo" })} />
       <p className="muted small">{drill.title} {i + 1} / {drill.items.length}</p>
-      <div className="card accent">
+      <div className="td-card" data-tone="accent">
         <p>{item.prompt}</p>
       </div>
       <p className="small muted">{picked === null ? "どれがよさそう？(よい選択は複数あることも)" : "それぞれの理由"}</p>
@@ -120,7 +120,7 @@ function DrillRunner({ drill }: { drill: Drill }) {
         <div key={k}>
           <button
             className={`option ${picked !== null ? (o.good ? "good" : "bad") : ""}`}
-            style={{ margin: "6px 0" }}
+            style={{ margin: "var(--space-2) 0" }}
             onClick={() => pick(k)}
             aria-pressed={picked === k}
           >
@@ -132,7 +132,7 @@ function DrillRunner({ drill }: { drill: Drill }) {
       ))}
       {picked !== null && (
         <button
-          className="primary block"
+          className="td-btn block" data-variant="primary" type="button"
           onClick={() => {
             setPicked(null);
             setI(i + 1);

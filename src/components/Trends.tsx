@@ -22,12 +22,12 @@ export function LineChart({ series, max, label, unit = "" }: { series: Series[];
   const x = (i: number) => pad + (n <= 1 ? (W - pad) / 2 : ((W - pad - 8) * i) / (n - 1));
   const y = (v: number) => H - 16 - ((H - 28) * Math.min(v, max)) / max;
   return (
-    <div className="card">
+    <div className="td-card">
       <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label={label}>
         {[0, max / 2, max].map((v) => (
           <g key={v}>
-            <line x1={pad} x2={W} y1={y(v)} y2={y(v)} stroke="var(--line)" />
-            <text x={0} y={y(v) + 4} fontSize="9" fill="var(--muted)">
+            <line x1={pad} x2={W} y1={y(v)} y2={y(v)} stroke="var(--border-subtle)" />
+            <text x={0} y={y(v) + 4} fontSize="9" fill="var(--text-secondary)">
               {Number.isInteger(v) ? v : v.toFixed(1)}
               {unit}
             </text>
@@ -66,15 +66,15 @@ export function LineChart({ series, max, label, unit = "" }: { series: Series[];
 /** 場面ごとの、実験の積み重ねと予想の変わり方 */
 export function TrackTable({ stats }: { stats: TrackStat[] }) {
   return (
-    <div className="card">
+    <div className="td-card">
       {stats.map((s) => (
         <div key={s.track} className="list-item">
           <strong>{TRACK_INFO[s.track].name}</strong>
-          <p className="small" style={{ margin: "4px 0" }}>
+          <p className="small" style={{ margin: "var(--space-1) 0" }}>
             実験 {s.count} 回・いちばん上は段階 {s.topLevel}・最悪の予想が外れたのは {s.disconfirmed} 回
           </p>
           {s.confidence ? (
-            <p className="small" style={{ margin: "4px 0" }}>
+            <p className="small" style={{ margin: "var(--space-1) 0" }}>
               最悪が起きる確信度は、最初の {s.confidence.n} 回の平均 {Math.round(s.confidence.first)}% から、最近の {s.confidence.n} 回は{" "}
               {Math.round(s.confidence.recent)}%。
               {s.expectedAnxiety && (
@@ -84,7 +84,7 @@ export function TrackTable({ stats }: { stats: TrackStat[] }) {
               )}
             </p>
           ) : (
-            <p className="small muted" style={{ margin: "4px 0" }}>4 回試すと、最初と最近の予想を比べられます。</p>
+            <p className="small muted" style={{ margin: "var(--space-1) 0" }}>4 回試すと、最初と最近の予想を比べられます。</p>
           )}
         </div>
       ))}
@@ -104,10 +104,10 @@ export function TalkTrend({ points }: { points: TalkPoint[] }) {
           label="台本会話で話し始めるまでの時間の推移"
           unit="秒"
           max={Math.max(3, Math.ceil(Math.max(...voiced.map((p) => p.medianLatencyMs!)) / 1000))}
-          series={[{ label: "話し始めるまで(中央値・だいたい)", color: "var(--accent)", values: voiced.map((p) => p.medianLatencyMs! / 1000) }]}
+          series={[{ label: "話し始めるまで(中央値・だいたい)", color: "var(--accent-solid)", values: voiced.map((p) => p.medianLatencyMs! / 1000) }]}
         />
       )}
-      <div className="card">
+      <div className="td-card">
         {[...points].reverse().slice(0, 10).map((p, i) => (
           <div key={i} className="list-item small">
             {fmt(p.createdAt)} {scriptById(p.scriptId)?.title ?? p.scriptId}: よい返し {p.good}/{p.turns}
@@ -134,12 +134,12 @@ export function RehearsalTrend({ rs }: { rs: Rehearsal[] }) {
           label="リハーサルで、緊張が外から見えると思った度合いの推移"
           max={10}
           series={[
-            { label: "話す前の予想", color: "var(--warm)", values: rs.map((r) => r.predictedVisible) },
-            { label: "話したあと", color: "var(--accent)", values: rs.map((r) => r.afterVisible ?? null) },
+            { label: "話す前の予想", color: "var(--warning-text)", values: rs.map((r) => r.predictedVisible) },
+            { label: "話したあと", color: "var(--accent-solid)", values: rs.map((r) => r.afterVisible ?? null) },
           ]}
         />
       )}
-      <div className="card">
+      <div className="td-card">
         {rated > 0 && (
           <p className="small">
             {rated} 回のうち {dropped} 回は、話したあとの見積もりが話す前より低くなりました。

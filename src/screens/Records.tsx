@@ -34,7 +34,7 @@ export function Records() {
       <div>
         <h1>記録</h1>
         <p>まだ記録がありません。最初の実験をしてみましょう。</p>
-        <button className="primary" onClick={() => go({ name: "experiment" })}>実験を始める</button>
+        <button className="td-btn" data-variant="primary" type="button" onClick={() => go({ name: "experiment" })}>実験を始める</button>
       </div>
     );
 
@@ -52,7 +52,7 @@ export function Records() {
         </div>
       )}
       {s.count > 0 && (
-        <div className="card">
+        <div className="td-card">
           <div className="row" style={{ gap: 24 }}>
             <div>
               <div className="muted small">実験</div>
@@ -84,7 +84,7 @@ export function Records() {
         </>
       )}
 
-      <button onClick={() => go({ name: "review" })}>今週の振り返り</button>
+      <button className="td-btn" type="button" onClick={() => go({ name: "review" })}>今週の振り返り</button>
 
       <h2>この 30 日</h2>
       <div className="heat" role="img" aria-label={`30 日間で実験した日は ${heat.filter((h) => h.count).length} 日`}>
@@ -97,7 +97,7 @@ export function Records() {
       {learned.length > 0 && (
         <>
           <h2>わかったこと</h2>
-          <div className="card">
+          <div className="td-card">
             {learned.map((x) => (
               <div key={x.id} className="list-item">
                 「{x.learned}」<span className="muted small"> — {x.title}</span>
@@ -110,7 +110,7 @@ export function Records() {
       {d.length > 0 && (
         <>
           <h2>実験の履歴</h2>
-          <div className="card">
+          <div className="td-card">
             {d.map((x) => (
               <details key={x.id} className="list-item">
                 <summary>
@@ -120,7 +120,7 @@ export function Records() {
                 <p className="small">起きたこと: {x.happened}</p>
                 {x.safetyBehaviorDropped && <p className="small">やめたお守り行動: {x.safetyBehaviorDropped}</p>}
                 <button
-                  className="ghost small"
+                  className="td-btn" data-variant="ghost" data-size="sm" type="button"
                   onClick={() => {
                     if (confirm("この実験の記録を削除します。元に戻せません。よろしいですか？")) db.experiments.delete(x.id!);
                   }}
@@ -134,7 +134,7 @@ export function Records() {
       )}
 
       {s.count >= 3 && (
-        <div className="card accent small">
+        <div className="td-card small" data-tone="accent">
           <p>3 回以上実験しましたね。続けやすさや、わかりにくかったところを教えてもらえませんか？</p>
           <a href={LINKS.feedback} target="_blank" rel="noreferrer">感想を送る(GitHub・内容は公開されます)</a>
         </div>
@@ -157,7 +157,7 @@ export function Records() {
       {videos.length > 0 && (
         <>
           <h2>ビデオ振り返り</h2>
-          <div className="card">
+          <div className="td-card">
             {videos.map((v) => {
               const p = Math.round((v.predicted.nervous + v.predicted.shaky + v.predicted.awkward) / 3);
               const o = Math.round((v.observed.nervous + v.observed.shaky + v.observed.awkward) / 3);
@@ -183,12 +183,12 @@ function GapChart({ xs }: { xs: Experiment[] }) {
   const bw = (W - pad) / Math.max(xs.length, 6);
   const y = (v: number) => H - pad - ((H - pad * 1.5) * v) / 100;
   return (
-    <div className="card">
+    <div className="td-card">
       <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="予想と結果の比較グラフ">
         {[0, 50, 100].map((v) => (
           <g key={v}>
-            <line x1={pad} x2={W} y1={y(v)} y2={y(v)} stroke="var(--line)" />
-            <text x={0} y={y(v) + 4} fontSize="9" fill="var(--muted)">{v}</text>
+            <line x1={pad} x2={W} y1={y(v)} y2={y(v)} stroke="var(--border-subtle)" />
+            <text x={0} y={y(v) + 4} fontSize="9" fill="var(--text-secondary)">{v}</text>
           </g>
         ))}
         {xs.map((x, i) => {
@@ -196,15 +196,15 @@ function GapChart({ xs }: { xs: Experiment[] }) {
           const w = bw * 0.33;
           return (
             <g key={x.id}>
-              <rect x={x0} y={y(x.confidence)} width={w} height={y(0) - y(x.confidence)} fill="var(--warm)" rx={2} />
-              <rect x={x0 + w + 1} y={y(x.cameTrue!)} width={w} height={Math.max(1, y(0) - y(x.cameTrue!))} fill="var(--accent)" rx={2} />
+              <rect x={x0} y={y(x.confidence)} width={w} height={y(0) - y(x.confidence)} fill="var(--warning-text)" rx={2} />
+              <rect x={x0 + w + 1} y={y(x.cameTrue!)} width={w} height={Math.max(1, y(0) - y(x.cameTrue!))} fill="var(--accent-solid)" rx={2} />
             </g>
           );
         })}
       </svg>
       <div className="row small muted">
-        <span><span style={{ color: "var(--warm)" }}>■</span> 予想した確信度</span>
-        <span><span style={{ color: "var(--accent)" }}>■</span> 実際に当たった度合い</span>
+        <span><span style={{ color: "var(--warning-text)" }}>■</span> 予想した確信度</span>
+        <span><span style={{ color: "var(--accent-solid)" }}>■</span> 実際に当たった度合い</span>
       </div>
     </div>
   );

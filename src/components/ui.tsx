@@ -13,7 +13,7 @@ export function Scale(props: {
   const id = "s-" + props.label.replace(/\s/g, "");
   return (
     <div>
-      <label htmlFor={id}>
+      <label className="td-label" htmlFor={id}>
         {props.label} <span className="scale-value">{props.value}{props.unit ?? ""}</span>
       </label>
       <input
@@ -74,7 +74,7 @@ export function Refs({ refs }: { refs: string[] }) {
 
 export function Back({ onClick, children = "← もどる" }: { onClick: () => void; children?: ReactNode }) {
   return (
-    <button className="ghost" onClick={onClick}>
+    <button className="td-btn" data-variant="ghost" type="button" onClick={onClick}>
       {children}
     </button>
   );

@@ -40,7 +40,7 @@ export function ReminderSection({ profile }: { profile: Profile }) {
   };
 
   return (
-    <div className="card">
+    <div className="td-card">
       <h3>カレンダーで思い出す</h3>
       {!it ? (
         <p className="small muted">先に上の「もし〜したら」を保存してください。</p>
@@ -49,9 +49,9 @@ export function ReminderSection({ profile }: { profile: Profile }) {
           <p className="small">
             「もし{it.when}、{it.then}」を、カレンダーの繰り返し予定として追加します。予定の時刻にカレンダーが通知します。
           </p>
-          <label htmlFor="rtime">時刻</label>
-          <input id="rtime" type="time" value={time} onChange={(e) => setTime(e.target.value)} style={{ font: "inherit", padding: 8 }} />
-          <label>曜日</label>
+          <label className="td-label" htmlFor="rtime">時刻</label>
+          <input className="td-input" id="rtime" type="time" value={time} onChange={(e) => setTime(e.target.value)} style={{ font: "inherit", padding: 8 }} />
+          <label className="td-label">曜日</label>
           <div className="row">
             {WEEKDAYS.map((w) => (
               <button key={w.id} className="chip" aria-pressed={days.includes(w.id)} onClick={() => toggle(w.id)}>
@@ -59,7 +59,7 @@ export function ReminderSection({ profile }: { profile: Profile }) {
               </button>
             ))}
           </div>
-          <button className="primary" style={{ marginTop: 12 }} disabled={!days.length || !time} onClick={exportIcs}>
+          <button className="td-btn" data-variant="primary" type="button" style={{ marginTop: "var(--space-3)" }} disabled={!days.length || !time} onClick={exportIcs}>
             カレンダーに追加(.ics)
           </button>
           <p className="small muted">変更したいときは、カレンダーの古い予定を消してから追加し直してください。</p>
