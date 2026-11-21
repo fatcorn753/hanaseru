@@ -30,6 +30,8 @@ input[type="range"] { width: 100%; accent-color: var(--accent-solid); min-height
 /* カード: 画面の区切りではなく、ひとまとまりの内容だけに使う */
 .td-card { margin: var(--space-3) 0; }
 .td-card[data-tone="accent"] { background: var(--accent-tint); border-color: transparent; box-shadow: none; }
+.td-notice { margin: var(--space-3) 0; }
+.td-notice p, .stack p { margin: 0; }
 .td-card[data-tone="warm"] { background: var(--warning-tint); border-color: transparent; box-shadow: none; }
 
 /* ---------- 下のタブバー(モバイル)/ 左のサイドバー(720px 以上) ---------- */

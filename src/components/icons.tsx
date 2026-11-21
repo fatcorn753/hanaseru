@@ -30,3 +30,9 @@ export const IconCheck = ({ size = 16 }: { size?: number }) => (
 export const IconStar = ({ size = 14 }: { size?: number }) => (
   <Svg size={size}><path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9L12 3.5Z" /></Svg>
 );
+export const IconInfo = () => (
+  <Svg><circle cx="12" cy="12" r="9" /><path d="M12 11v5.5" /><path d="M12 7.5h.01" /></Svg>
+);
+export const IconAlert = () => (
+  <Svg><path d="M12 4 2.8 19.5h18.4L12 4Z" /><path d="M12 10v4.5" /><path d="M12 17.5h.01" /></Svg>
+);

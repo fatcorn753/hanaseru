@@ -1,6 +1,7 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect, useState, type ReactNode } from "react";
 import { IconChart, IconChat, IconFlask, IconHome, IconWind } from "./components/icons";
+import { requestPersist } from "./lib/backup";
 import { db, getProfile } from "./lib/db";
 import { NavContext, type Route } from "./lib/nav";
 import { Dojo } from "./screens/Dojo";
@@ -41,6 +42,12 @@ export function App() {
   useEffect(() => {
     if (JSON.stringify(history.state) !== JSON.stringify(route)) history.pushState(route, "");
   }, [route]);
+
+  // 初回案内を終えたら、保存データを消さないようブラウザに頼む(結果はブラウザが決める)
+  const onboarded = profile?.onboardedAt !== undefined;
+  useEffect(() => {
+    if (onboarded) void requestPersist();
+  }, [onboarded]);
 
   if (!profile) return null;
   if (!profile.onboardedAt) return <Onboarding profile={profile} />;

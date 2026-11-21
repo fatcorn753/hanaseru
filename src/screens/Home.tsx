@@ -6,6 +6,7 @@ import { useNav } from "../lib/nav";
 import { DEFAULT_WEEKLY_GOAL, goalProgress, pendingPep, pendingReview, recommendLevel, summarize, weekStart, weekSummary } from "../lib/stats";
 import type { SleepQuality } from "../lib/types";
 import { IconCheck } from "../components/icons";
+import { KeepData } from "../components/KeepData";
 
 const SLEEP: { q: SleepQuality; label: string }[] = [
   { q: "poor", label: "足りない" },
@@ -37,6 +38,8 @@ export function Home() {
         <span className="spacer" />
         <button className="td-btn" data-variant="ghost" type="button" onClick={() => go({ name: "settings" })} aria-label="設定">設定</button>
       </div>
+
+      <KeepData profile={profile} />
 
       {pep && (
         <div className="td-card" data-tone="warm">

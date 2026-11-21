@@ -1,10 +1,10 @@
 import { useLiveQuery } from "dexie-react-hooks";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { downloadBackup, persistState, requestPersist, type PersistState } from "../lib/backup";
 import { Back, Chips } from "../components/ui";
 import { HELP_LINKS } from "../content/foundation";
 import { SAFETY_BEHAVIORS } from "../content/missions";
-import { exportAll, getProfile, importAll, saveProfile, wipeAll } from "../lib/db";
-import { localDate } from "../lib/date";
+import { getProfile, importAll, saveProfile, wipeAll } from "../lib/db";
 import { LINKS } from "../lib/links";
 import { useNav } from "../lib/nav";
 import { DEFAULT_WEEKLY_GOAL } from "../lib/stats";
@@ -17,15 +17,14 @@ export function Settings() {
   const [when, setWhen] = useState<string | null>(null);
   const [then, setThen] = useState<string | null>(null);
   const file = useRef<HTMLInputElement>(null);
+  const [persist, setPersist] = useState<PersistState | null>(null);
+  useEffect(() => {
+    void persistState().then(setPersist);
+  }, []);
   if (!profile) return null;
 
   const download = async () => {
-    const blob = new Blob([JSON.stringify(await exportAll(), null, 1)], { type: "application/json" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `hanaseru-${localDate()}.json`;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    await downloadBackup();
     setMsg("書き出しました。");
   };
 
@@ -84,6 +83,27 @@ export function Settings() {
 
       <h2>データ</h2>
       <p className="small muted">記録はこの端末のブラウザの中だけにあります。ブラウザのデータを消すと記録も消えるので、ときどき書き出しておくと安心です。</p>
+      <p className="small">
+        最後の書き出し: {profile.lastExportAt ? new Date(profile.lastExportAt).toLocaleDateString("ja-JP") : "まだ書き出していません"}
+      </p>
+      {persist === "persisted" && <p className="small">このブラウザは、空き容量が減っても記録を消さない設定になっています。</p>}
+      {persist === "best-effort" && (
+        <div className="row">
+          <p className="small">空き容量が減ると、ブラウザが記録を消すことがあります。</p>
+          <button
+            className="td-btn"
+            data-size="sm"
+            type="button"
+            onClick={async () => {
+              const r = await requestPersist();
+              setPersist(r);
+              if (r !== "persisted") setMsg("ブラウザが許可しませんでした。書き出しで残しておくと安心です。");
+            }}
+          >
+            消さないよう頼む
+          </button>
+        </div>
+      )}
       <div className="row">
         <button className="td-btn" type="button" onClick={download}>書き出す</button>
         <button className="td-btn" type="button" onClick={() => file.current?.click()}>読み込む</button>
@@ -100,7 +120,7 @@ export function Settings() {
       >
         すべて削除する
       </button>
-      {msg && <p className="feedback good" role="status">{msg}</p>}
+      {msg && <p className="small" role="status">{msg}</p>}
 
       <h2>感想・不具合を送る</h2>
       <p className="small">

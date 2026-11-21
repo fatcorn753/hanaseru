@@ -143,6 +143,12 @@ export interface Profile {
   lastReviewedWeek?: string;
   /** 今週意識すること(振り返りで選ぶ) */
   weeklyFocus?: string;
+  /** 最後に記録を書き出した時刻 */
+  lastExportAt?: number;
+  /** 書き出しの案内を「あとで」にした期限 */
+  backupSnoozedUntil?: number;
+  /** ホーム画面への追加の案内を閉じたか */
+  a2hsDismissed?: boolean;
   /** いま取り組んでいる場面 */
   track?: Track;
   /** 台本会話の設定 */
