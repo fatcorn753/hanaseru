@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Chips, Scale, Steps } from "../components/ui";
-import { SAFETY_BEHAVIORS } from "../content/missions";
+import { SAFETY_BEHAVIORS, TRACKS, TRACK_INFO } from "../content/missions";
 import { HELP_LINKS } from "../content/foundation";
 import { saveProfile } from "../lib/db";
-import type { Profile } from "../lib/types";
+import type { Profile, Track } from "../lib/types";
 
 export const BASELINE_ITEMS = [
   "店員さんに話しかける",
@@ -11,6 +11,9 @@ export const BASELINE_ITEMS = [
   "初対面の人と話す",
   "3 人以上の輪に入る",
   "沈黙が続く",
+  "人前で発表する",
+  "職場やバイトで質問・報告する",
+  "頼みごとをする・断る",
 ];
 
 const WHEN_OPTIONS = ["人と会う予定の 5 分前", "休憩時間に入ったら", "朝ごはんを食べたら", "帰り道を歩き始めたら"];
@@ -19,11 +22,13 @@ const THEN_OPTIONS = ["ため息呼吸を 1 分する", "今日の実験を 1 �
 export function Onboarding({ profile }: { profile: Profile }) {
   const [step, setStep] = useState(0);
   const [baseline, setBaseline] = useState<Record<string, number>>(
-    profile.baseline ?? Object.fromEntries(BASELINE_ITEMS.map((k) => [k, 5])),
+    // 項目を足す前の記録にも、足した項目の初期値を入れる
+    { ...Object.fromEntries(BASELINE_ITEMS.map((k) => [k, 5])), ...profile.baseline },
   );
   const [safety, setSafety] = useState<string[]>(profile.safetyBehaviors);
   const [when, setWhen] = useState<string[]>([]);
   const [then, setThen] = useState<string[]>([]);
+  const [track, setTrack] = useState<Track>(profile.track ?? "chat");
   const total = 5;
 
   const finish = async () => {
@@ -31,6 +36,7 @@ export function Onboarding({ profile }: { profile: Profile }) {
       ...profile,
       baseline,
       safetyBehaviors: safety,
+      track,
       ifThen: when[0] && then[0] ? { when: when[0], then: then[0] } : undefined,
       onboardedAt: Date.now(),
     });
@@ -73,6 +79,18 @@ export function Onboarding({ profile }: { profile: Profile }) {
           <p>人は会話の気まずさを大きく見積もり、相手からの好感を低く見積もる傾向があります。予想と現実のずれを自分の目で確かめることが、怖さを減らす一番の近道です。</p>
           <p className="muted">習慣になるまでの目安は約 2 か月。1 日休んでも崩れません。</p>
           <p className="refs">根拠: Clark et al. (2006) / Craske et al. (2014) / Boothby et al. (2018) / Lally et al. (2010)</p>
+          <h3>まず練習する場面</h3>
+          <p className="small muted">場面ごとに 6 段階の課題があります。ホームでいつでも切り替えられます。</p>
+          <Chips
+            single
+            options={TRACKS.map((t) => TRACK_INFO[t].name)}
+            value={[TRACK_INFO[track].name]}
+            // 選択中をもう一度押しても外さない(場面は必ず 1 つ)
+            onChange={(v) => {
+              const t = TRACKS.find((k) => TRACK_INFO[k].name === v[0]);
+              if (t) setTrack(t);
+            }}
+          />
           <div className="row">
             <button onClick={() => setStep(0)}>もどる</button>
             <span className="spacer" />

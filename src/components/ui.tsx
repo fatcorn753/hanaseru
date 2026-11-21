@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 export function Scale(props: {
   label: string;
@@ -82,19 +82,17 @@ export function Back({ onClick, children = "← もどる" }: { onClick: () => v
 
 /** 秒単位のカウントダウン。running が false の間は止まる */
 export function useCountdown(seconds: number, running: boolean) {
-  const [left, setLeft] = useState(seconds);
-  const startRef = useRef<number | null>(null);
-  useEffect(() => {
-    setLeft(seconds);
-    startRef.current = null;
-  }, [seconds]);
+  // 残り時間は、どの長さに対する値かと組で持つ。
+  // 長さが変わった描画では古い残り時間を使わず、新しい長さから数え直す
+  // (長さの変更と開始が同じ描画に重なっても、古い長さで始まらないように)
+  const [st, setSt] = useState({ seconds, left: seconds });
+  const left = st.seconds === seconds ? st.left : seconds;
   useEffect(() => {
     if (!running) return;
     const begin = Date.now() - (seconds - left) * 1000;
-    startRef.current = begin;
     const t = setInterval(() => {
       const l = Math.max(0, seconds - Math.floor((Date.now() - begin) / 1000));
-      setLeft(l);
+      setSt({ seconds, left: l });
       if (l === 0) clearInterval(t);
     }, 250);
     return () => clearInterval(t);
