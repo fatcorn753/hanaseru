@@ -79,7 +79,7 @@ export function Settings() {
       </div>
 
       <h2>自分のお守り行動</h2>
-      <Chips options={SAFETY_BEHAVIORS} value={profile.safetyBehaviors} onChange={(v) => saveProfile({ ...profile, safetyBehaviors: v })} />
+      <Chips label="自分のお守り行動" options={SAFETY_BEHAVIORS} value={profile.safetyBehaviors} onChange={(v) => saveProfile({ ...profile, safetyBehaviors: v })} />
 
       <h2>データ</h2>
       <p className="small muted">記録はこの端末のブラウザの中だけにあります。ブラウザのデータを消すと記録も消えるので、ときどき書き出しておくと安心です。</p>

@@ -17,14 +17,14 @@ export function Dojo({ drillId }: { drillId?: string }) {
       <h1>スキル道場</h1>
       <p className="muted">現実の会話で使う「型」を、ひとりで確かめる場所です。知るだけでは身につきにくいので、終わったら現実で 1 回試しましょう。</p>
       <div className="td-card" data-tone="accent">
-        <h3>台本会話</h3>
+        <h2 className="sub">台本会話</h2>
         <p className="small">雑談・職場での質問や報告・頼む・断るの会話を、声に出して練習します。分かれ道つきで、どの返しでも会話は続きます。</p>
-        <button className="td-btn" data-variant="primary" type="button" onClick={() => go({ name: "talk" })}>はじめる</button>
+        <button className="td-btn" data-variant="primary" type="button" aria-label="台本会話をはじめる" onClick={() => go({ name: "talk" })}>はじめる</button>
       </div>
       <div className="td-card">
-        <h3>人前で話すリハーサル</h3>
+        <h2 className="sub">人前で話すリハーサル</h2>
         <p className="small">時間を決めて声に出して話し、話した時間と間を測ります。録音はしません。</p>
-        <button className="td-btn" type="button" onClick={() => go({ name: "rehearsal" })}>はじめる</button>
+        <button className="td-btn" type="button" aria-label="リハーサルをはじめる" onClick={() => go({ name: "rehearsal" })}>はじめる</button>
       </div>
       <h2>型を確かめる</h2>
       {DRILLS.map((x) => {
@@ -39,9 +39,9 @@ export function Dojo({ drillId }: { drillId?: string }) {
         );
       })}
       <div className="td-card">
-        <h3>ビデオで自分を見る</h3>
+        <h2 className="sub">ビデオで自分を見る</h2>
         <p className="small">自分が思っているほど緊張は外から見えていないことを、録画で確かめます。</p>
-        <button className="td-btn" type="button" onClick={() => go({ name: "video" })}>はじめる</button>
+        <button className="td-btn" type="button" aria-label="ビデオで自分を見るをはじめる" onClick={() => go({ name: "video" })}>はじめる</button>
       </div>
     </div>
   );

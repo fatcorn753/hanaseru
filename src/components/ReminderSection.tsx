@@ -51,8 +51,8 @@ export function ReminderSection({ profile }: { profile: Profile }) {
           </p>
           <label className="td-label" htmlFor="rtime">時刻</label>
           <input className="td-input" id="rtime" type="time" value={time} onChange={(e) => setTime(e.target.value)} style={{ font: "inherit", padding: 8 }} />
-          <label className="td-label">曜日</label>
-          <div className="row">
+          <p className="td-label">曜日</p>
+          <div className="row" role="group" aria-label="曜日">
             {WEEKDAYS.map((w) => (
               <button key={w.id} className="chip" aria-pressed={days.includes(w.id)} onClick={() => toggle(w.id)}>
                 {w.label}

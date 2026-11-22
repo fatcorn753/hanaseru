@@ -64,7 +64,7 @@ export function Home() {
 
       <div className="td-card">
         <p className="muted small">昨夜の睡眠</p>
-        <div className="row">
+        <div className="row" role="group" aria-label="昨夜の睡眠">
           {SLEEP.map((o) => (
             <button key={o.q} className="chip" aria-pressed={sleep?.quality === o.q} onClick={() => db.sleep.put({ date: today, quality: o.q })}>
               {o.label}
@@ -76,7 +76,7 @@ export function Home() {
 
       {planned.length > 0 && (
         <div className="td-card" data-tone="accent">
-          <h3>結果を待っている実験</h3>
+          <h2 className="sub">結果を待っている実験</h2>
           {planned.map((x) => (
             <div key={x.id} className="row list-item">
               <span>{x.title}</span>
@@ -89,7 +89,7 @@ export function Home() {
 
       <div className="td-card">
         <p className="muted small">今日のおすすめ</p>
-        <div className="row" aria-label="場面">
+        <div className="row" role="group" aria-label="練習する場面">
           {TRACKS.map((t) => (
             <button key={t} className="chip" aria-pressed={t === track} onClick={() => saveProfile({ ...profile, track: t })}>
               {TRACK_INFO[t].name}

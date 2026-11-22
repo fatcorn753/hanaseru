@@ -23,6 +23,7 @@ export function Scale(props: {
         max={max}
         step={max === 100 ? 5 : 1}
         value={props.value}
+        aria-valuetext={`${props.value}${props.unit ?? ""}`}
         onChange={(e) => props.onChange(Number(e.target.value))}
       />
       <div className="row muted small">
@@ -34,9 +35,10 @@ export function Scale(props: {
   );
 }
 
-export function Chips(props: { options: string[]; value: string[]; onChange: (v: string[]) => void; single?: boolean }) {
+/** 選択肢のボタン群。label は読み上げで、どの問いへの選択肢かを伝えるために使う */
+export function Chips(props: { label: string; options: string[]; value: string[]; onChange: (v: string[]) => void; single?: boolean }) {
   return (
-    <div className="row">
+    <div className="row" role="group" aria-label={props.label}>
       {props.options.map((o) => {
         const on = props.value.includes(o);
         return (
@@ -60,7 +62,7 @@ export function Chips(props: { options: string[]; value: string[]; onChange: (v:
 
 export function Steps({ total, at }: { total: number; at: number }) {
   return (
-    <div className="steps" aria-label={`${total} 段階中 ${at + 1} 段階目`}>
+    <div className="steps" role="img" aria-label={`${total} 段階中 ${at + 1} 段階目`}>
       {Array.from({ length: total }, (_, i) => (
         <span key={i} className={i <= at ? "on" : ""} />
       ))}
@@ -103,3 +105,31 @@ export function useCountdown(seconds: number, running: boolean) {
 }
 
 export const fmtTime = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+
+/**
+ * 画面(または画面内の段階)が変わったら、新しい h1 へフォーカスを移す。
+ * 押したボタンが消えるとフォーカスが body に落ち、スクリーンリーダーに新しい画面が伝わらず、
+ * キーボード操作も先頭からやり直しになるため。最初に表示した h1 には移さない。
+ */
+export function useFocusHeading() {
+  useEffect(() => {
+    const root = document.getElementById("root");
+    if (!root) return;
+    let last: HTMLElement | null = null;
+    let lastText: string | null = null;
+    const check = () => {
+      const h = root.querySelector<HTMLElement>("h1");
+      if (!h || (h === last && h.textContent === lastText)) return;
+      const first = last === null;
+      last = h;
+      lastText = h.textContent;
+      if (first) return;
+      h.tabIndex = -1;
+      h.focus({ preventScroll: true });
+    };
+    check();
+    const mo = new MutationObserver(check);
+    mo.observe(root, { childList: true, subtree: true, characterData: true });
+    return () => mo.disconnect();
+  }, []);
+}

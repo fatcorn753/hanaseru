@@ -41,7 +41,7 @@ function TalkList() {
 
       <div className="td-card">
         <p className="small muted">答え方</p>
-        <div className="row">
+        <div className="row" role="group" aria-label="答え方">
           <button className="chip" aria-pressed={t.voice} onClick={() => set({ voice: true })}>声に出してから選ぶ</button>
           <button className="chip" aria-pressed={!t.voice} onClick={() => set({ voice: false })}>選ぶだけ</button>
         </div>
@@ -49,7 +49,7 @@ function TalkList() {
         {canSpeak() && (
           <>
             <p className="small muted">相手のセリフ</p>
-            <div className="row">
+            <div className="row" role="group" aria-label="相手のセリフ">
               <button className="chip" aria-pressed={t.tts} onClick={() => set({ tts: true })}>読み上げる</button>
               <button className="chip" aria-pressed={!t.tts} onClick={() => set({ tts: false })}>文字だけ</button>
             </div>
@@ -58,7 +58,7 @@ function TalkList() {
         {t.voice && canRecognize() && (
           <>
             <p className="small muted">話した言葉を文字にする</p>
-            <div className="row">
+            <div className="row" role="group" aria-label="話した言葉を文字にする">
               <button className="chip" aria-pressed={!t.recognition} onClick={() => set({ recognition: false })}>しない</button>
               <button className="chip" aria-pressed={t.recognition} onClick={() => set({ recognition: true })}>する</button>
             </div>

@@ -126,7 +126,7 @@ export function Rehearsal() {
           ))}
         </div>
         <p className="small muted">今回意識すること(1 つ)</p>
-        <Chips single options={FOCUSES} value={focus} onChange={setFocus} />
+        <Chips label="今回意識すること" single options={FOCUSES} value={focus} onChange={setFocus} />
         <Scale label="話しているときの緊張は、外から見てどのくらいわかると思う？" value={predicted} onChange={setPredicted} low="まったく" high="はっきり" />
         <button className="td-btn block" data-variant="primary" type="button" style={{ marginTop: "var(--space-3)" }} onClick={start}>
           はじめる

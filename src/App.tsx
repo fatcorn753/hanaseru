@@ -1,6 +1,7 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect, useState, type ReactNode } from "react";
 import { IconChart, IconChat, IconFlask, IconHome, IconWind } from "./components/icons";
+import { useFocusHeading } from "./components/ui";
 import { requestPersist } from "./lib/backup";
 import { db, getProfile } from "./lib/db";
 import { NavContext, type Route } from "./lib/nav";
@@ -45,6 +46,7 @@ export function App() {
 
   // 初回案内を終えたら、保存データを消さないようブラウザに頼む(結果はブラウザが決める)
   const onboarded = profile?.onboardedAt !== undefined;
+  useFocusHeading();
   useEffect(() => {
     if (onboarded) void requestPersist();
   }, [onboarded]);

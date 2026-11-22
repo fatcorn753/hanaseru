@@ -102,7 +102,7 @@ export function ExperimentFlow({ resumeId, missionId }: { resumeId?: number; mis
       {phase === "choose" && (
         <section>
           <h1>課題を選ぶ</h1>
-          <div className="row" aria-label="場面">
+          <div className="row" role="group" aria-label="場面">
             {TRACKS.map((t) => (
               <button
                 key={t}
@@ -118,7 +118,7 @@ export function ExperimentFlow({ resumeId, missionId }: { resumeId?: number; mis
             ))}
           </div>
           <p className="small muted">{rec.reason}</p>
-          <div className="row" role="tablist" aria-label="段階">
+          <div className="row" role="group" aria-label="段階">
             {([1, 2, 3, 4, 5, 6] as Level[]).map((l) => (
               <button key={l} className="chip" aria-pressed={l === level} onClick={() => setViewLevel(l)}>
                 {l}
@@ -182,10 +182,10 @@ export function ExperimentFlow({ resumeId, missionId }: { resumeId?: number; mis
           </div>
           <Scale label="それが起きる確信度" value={confidence} onChange={setConfidence} max={100} unit="%" low="起きない" high="必ず起きる" />
           <Scale label="予想する緊張" value={expectedAnxiety} onChange={setExpectedAnxiety} low="0 平気" high="10 最大" />
-          <label className="td-label">今回やめる「お守り行動」(1 つ)</label>
-          <Chips single options={safetyOptions} value={dropped} onChange={setDropped} />
-          <label className="td-label">相手に向ける注意のお題(1 つ)</label>
-          <Chips single options={FOCUS_TASKS} value={focus} onChange={setFocus} />
+          <p className="td-label">今回やめる「お守り行動」(1 つ)</p>
+          <Chips label="今回やめる「お守り行動」" single options={safetyOptions} value={dropped} onChange={setDropped} />
+          <p className="td-label">相手に向ける注意のお題(1 つ)</p>
+          <Chips label="相手に向ける注意のお題" single options={FOCUS_TASKS} value={focus} onChange={setFocus} />
           <p className="small muted">お題は気をそらすためではなく、相手のことを知るためのものです。</p>
           <button className="td-btn block" data-variant="primary" type="button" style={{ marginTop: "var(--space-4)" }} disabled={!prediction.trim()} onClick={savePlan}>
             予想を保存する
@@ -207,7 +207,7 @@ export function ExperimentFlow({ resumeId, missionId }: { resumeId?: number; mis
             return d ? <p key={sid} className="small">合言葉: {d.rule}</p> : null;
           })}
           <p className="muted small">うまく話せるかではなく、予想が当たるかを確かめる実験です。失敗しても、それもデータになります。</p>
-          <h3>直前に使う(任意)</h3>
+          <h2 className="sub">直前に使う(任意)</h2>
           <div className="row">
             <button className="td-btn" type="button" onClick={() => go({ name: "foundation", tool: "breath" })}>ため息呼吸</button>
             <button className="td-btn" type="button" onClick={() => go({ name: "foundation", tool: "reappraisal" })}>読み替え</button>

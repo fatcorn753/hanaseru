@@ -50,11 +50,11 @@ export function Onboarding({ profile }: { profile: Profile }) {
           <h1>はなせる</h1>
           <p>会話への怖さを、<strong>小さな実験</strong>で少しずつほどいていくアプリです。</p>
           <div className="td-card">
-            <h3>このアプリがめざすこと</h3>
+            <h2 className="sub">このアプリがめざすこと</h2>
             <p>緊張をゼロにすることではありません。緊張していても会話を避けずに済み、終わったあと引きずらない状態をめざします。</p>
           </div>
           <div className="td-card" data-tone="warm">
-            <h3>大切なお知らせ</h3>
+            <h2 className="sub">大切なお知らせ</h2>
             <p className="small">
               このアプリは練習用の道具で、病気の診断や治療をするものではありません。毎日の生活が送れないほどつらいとき、気分の落ち込みが続くときは、医療機関や相談窓口を頼ってください。
             </p>
@@ -79,9 +79,10 @@ export function Onboarding({ profile }: { profile: Profile }) {
           <p>人は会話の気まずさを大きく見積もり、相手からの好感を低く見積もる傾向があります。予想と現実のずれを自分の目で確かめることが、怖さを減らす一番の近道です。</p>
           <p className="muted">習慣になるまでの目安は約 2 か月。1 日休んでも崩れません。</p>
           <p className="refs">根拠: Clark et al. (2006) / Craske et al. (2014) / Boothby et al. (2018) / Lally et al. (2010)</p>
-          <h3>まず練習する場面</h3>
+          <h2 className="sub">まず練習する場面</h2>
           <p className="small muted">場面ごとに 6 段階の課題があります。ホームでいつでも切り替えられます。</p>
           <Chips
+            label="まず練習する場面"
             single
             options={TRACKS.map((t) => TRACK_INFO[t].name)}
             value={[TRACK_INFO[track].name]}
@@ -119,7 +120,7 @@ export function Onboarding({ profile }: { profile: Profile }) {
           <p className="muted small">
             こうした行動は「安全行動」と呼ばれます。その場は楽になりますが、「大丈夫だったのはお守りのおかげ」と感じさせ、怖さを長引かせます。実験で一つずつ外していきます。
           </p>
-          <Chips options={SAFETY_BEHAVIORS} value={safety} onChange={setSafety} />
+          <Chips label="いつものお守り行動" options={SAFETY_BEHAVIORS} value={safety} onChange={setSafety} />
           <div className="row" style={{ marginTop: "var(--space-4)" }}>
             <button className="td-btn" type="button" onClick={() => setStep(2)}>もどる</button>
             <span className="spacer" />
@@ -131,10 +132,10 @@ export function Onboarding({ profile }: { profile: Profile }) {
         <section>
           <h1>きっかけを一つ決める</h1>
           <p>「もし〜したら、〜する」と決めておくと、実行率が上がります。あとで変えられます。</p>
-          <label className="td-label">もし…</label>
-          <Chips single options={WHEN_OPTIONS} value={when} onChange={setWhen} />
-          <label className="td-label">そのとき…</label>
-          <Chips single options={THEN_OPTIONS} value={then} onChange={setThen} />
+          <p className="td-label">もし…</p>
+          <Chips label="もし…" single options={WHEN_OPTIONS} value={when} onChange={setWhen} />
+          <p className="td-label">そのとき…</p>
+          <Chips label="そのとき…" single options={THEN_OPTIONS} value={then} onChange={setThen} />
           <p className="refs">根拠: Gollwitzer & Sheeran (2006)</p>
           <div className="row" style={{ marginTop: "var(--space-4)" }}>
             <button className="td-btn" type="button" onClick={() => setStep(3)}>もどる</button>

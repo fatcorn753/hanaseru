@@ -34,7 +34,7 @@ export function Foundation({ tool }: { tool?: Tool }) {
         </button>
       ))}
       <div className="td-card">
-        <h3>睡眠と運動</h3>
+        <h2 className="sub">睡眠と運動</h2>
         <p className="small">
           睡眠が足りないと、人との距離をとりたくなり、不安も強まりやすくなります。ホームで睡眠を記録すると、その日の課題が軽めになります。会う前の 5〜10 分の散歩も、緊張をやわらげる助けになります。
         </p>
@@ -225,10 +225,13 @@ function Pmr({ onBack }: { onBack: () => void }) {
         </>
       )}
       {step && (
-        <div className="td-card" data-tone="accent" aria-live="polite">
+        <div className="td-card" data-tone="accent">
           <p className="muted small">{i + 1} / {PMR_STEPS.length}</p>
-          <h2>{step.part}</h2>
-          <p className="big-number">{tense ? step.tense : "ふっとゆるめる"}</p>
+          {/* 読み上げは部位と動作が変わったときだけにする。毎秒の残り秒数は読み上げない */}
+          <div aria-live="polite" aria-atomic="true">
+            <h2>{step.part}</h2>
+            <p className="big-number">{tense ? step.tense : "ふっとゆるめる"}</p>
+          </div>
           <p>{left} 秒</p>
         </div>
       )}

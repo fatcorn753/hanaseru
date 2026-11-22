@@ -83,7 +83,7 @@ export function WeeklyReview({ weekStart: ws }: { weekStart?: number }) {
 
       <h2>{isCurrent ? "これから" : "今週"}意識すること(1 つ)</h2>
       {profile.weeklyFocus && <p className="small muted">いまの目標: {profile.weeklyFocus}</p>}
-      <Chips single options={options} value={focus} onChange={setFocus} />
+      <Chips label="意識すること" single options={options} value={focus} onChange={setFocus} />
       <Refs refs={["Harkin et al. (2016) Psychological Bulletin", "Gollwitzer & Sheeran (2006)"]} />
       <button className="td-btn block" data-variant="primary" type="button" style={{ marginTop: "var(--space-3)" }} onClick={save}>
         {focus[0] ? "これにする" : "そのまま閉じる"}
